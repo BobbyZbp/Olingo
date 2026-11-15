@@ -76,6 +76,9 @@ class Session:
         self.agent = None            # the Olingo device, when connected: its camera, microphone and speaker are used
         self.agent_mic = True        # False: the device is camera and speaker only, this Mac's microphone listens
         self.mirrors = set()         # pages opened with ?mirror: they are shown the caller's camera too (memory only)
+        # The camera on the device is mounted on its side: its pictures are turned this many degrees clockwise
+        # before anything else sees them. The page has a button that turns them a quarter further.
+        self.agent_rotate = int(os.environ.get("OLINGO_DEVICE_ROTATE", "90")) % 360
         self.monitor = privacy.Monitor(self.push, lambda: self.speech.pid if self.speech else None,
                                        device=lambda: self.agent)
 
@@ -158,6 +161,15 @@ class Session:
             self.push("agent", state="lost" if lost else "disconnected", **link.summary())
 
     def _agent_frame(self, raw: bytes):
+        if self.agent_rotate:
+            try:
+                im = Image.open(io.BytesIO(raw))
+                im = im.transpose({90: Image.ROTATE_270, 180: Image.ROTATE_180, 270: Image.ROTATE_90}[self.agent_rotate])
+                b = io.BytesIO()
+                im.save(b, "JPEG", quality=85)
+                raw = b.getvalue()
+            except Exception:
+                pass
         self.on_frame(raw)                                     # same path as a laptop frame: memory only
         if self.loop:
             for ws in list(self.socks):                        # and onto the page, in place of the laptop camera
@@ -484,6 +496,9 @@ async def ws(sock: WebSocket):
                     S.hangup()
                 elif kind == "preview":
                     S.preview(d)
+                elif kind == "agent" and d.get("action") == "rotate":
+                    S.agent_rotate = (S.agent_rotate + 90) % 360      # the picture a quarter turn further, clockwise
+                    S.push("rotate", degrees=S.agent_rotate)
                 elif kind == "agent":
                     action = d.get("action")
                     threading.Thread(target=(lambda: S.connect_agent(d.get("target"))) if action == "connect"
