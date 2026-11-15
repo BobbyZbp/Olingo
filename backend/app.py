@@ -75,6 +75,7 @@ class Session:
         self.lock = threading.Lock()
         self.agent = None            # the Olingo device, when connected: its camera, microphone and speaker are used
         self.agent_mic = True        # False: the device is camera and speaker only, this Mac's microphone listens
+        self.mirrors = set()         # pages opened with ?mirror: they are shown the caller's camera too (memory only)
         self.monitor = privacy.Monitor(self.push, lambda: self.speech.pid if self.speech else None,
                                        device=lambda: self.agent)
 
@@ -469,10 +470,15 @@ async def ws(sock: WebSocket):
             if m.get("bytes") is not None:
                 if S.agent is None:                 # with the device connected, its camera is the camera
                     S.on_frame(m["bytes"])          # replaces the previous frame; memory only
+                    for other in list(S.mirrors):   # a second page that follows this call (?mirror) sees it too
+                        if other is not sock:
+                            asyncio.ensure_future(S._send_bytes(other, m["bytes"]))
             elif m.get("text"):
                 d = json.loads(m["text"])
                 kind = d.get("type")
-                if kind == "start":
+                if kind == "mirror":
+                    S.mirrors.add(sock)
+                elif kind == "start":
                     S.start_call(d)
                 elif kind == "hangup":
                     S.hangup()
@@ -490,6 +496,7 @@ async def ws(sock: WebSocket):
         pass
     finally:
         S.socks.discard(sock)
+        S.mirrors.discard(sock)
         if not S.socks:                             # the last page is gone: end the call, forget the frame
             S.frame = None
             if S.call:

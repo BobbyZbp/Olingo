@@ -892,7 +892,11 @@ class Call:
             return True                                  # far longer than the word: a sentence
         own = h.get("lang") == self.l1 and self.l1 != self.l2
         longish = len(text) >= 8 if has_cjk(text) else len(norm(text).split()) >= 3
-        return bool(own and longish) or bool(ASKING.search(norm(text)) and longish)
+        if has_cjk(target):
+            sentence = len(text) >= len(target) + 6
+        else:                                            # three words more than the word asked for: a sentence
+            sentence = len(norm(text).split()) >= len(norm(target).split()) + 3
+        return bool(own and longish) or bool(ASKING.search(norm(text)) and longish) or sentence
 
     def drill_hear(self, target: str) -> dict:
         """Listen for the learner repeating a word or phrase. If they clearly said something but it could not be
@@ -1235,6 +1239,13 @@ class Call:
         self.offer = None
         self.last_q = ""
         it = intent(text, offer is not None)
+        if it == "yes" and (len(text) >= 14 if has_cjk(text) else len(norm(text).split()) >= 6):
+            # a long answer that starts like a yes may ask for something else ("yes, but teach me cat first"):
+            # Bonsai reads the whole sentence before the offered word is taught
+            ok, _ = brain.accepts_offer(text, offer[0])
+            self.stats["model_calls"] += 1
+            if not ok:
+                it = "ask"
         if it == "ask":
             self.respond(text, frame, h)
             return True

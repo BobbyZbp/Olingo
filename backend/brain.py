@@ -394,3 +394,24 @@ def same_question(new: str, earlier: list) -> tuple:
     tm = out.get("timings") or {}
     return ans.startswith("yes"), {"ms": round((time.time() - t0) * 1000), "prompt_n": tm.get("prompt_n") or 0,
                                    "predicted_n": tm.get("predicted_n") or 0}
+
+
+def accepts_offer(text: str, thing: str) -> tuple:
+    """The learner answered "Want to learn the word for X?" with a longer sentence that starts like a yes. Are they
+    simply accepting, or asking for something else ("yes, but teach me cat first")? -> (accepts: bool, info)."""
+    system = ("A tutor offered to teach the learner the word for one thing. Read the learner's answer. Reply accept "
+              "if they simply agree to learn that word. Reply other if they ask for a different word, ask a "
+              "question, or want to do something else first.")
+    user = f"The tutor offered the word for: {thing}\nThe learner answered: {text}\naccept or other?"
+    body = {**COMMON, "temperature": 0.0, "messages": [{"role": "system", "content": system}, {"role": "user", "content": user}],
+            "max_tokens": 2, "grammar": 'root ::= "accept" | "other"\n', "id_slot": 1}
+    t0 = time.time()
+    try:
+        req = urllib.request.Request(URLS["9B"] + "/v1/chat/completions", data=json.dumps(body).encode(),
+                                     headers={"Content-Type": "application/json"})
+        with urllib.request.urlopen(req, timeout=8) as r:
+            out = json.load(r)
+        ans = out["choices"][0]["message"]["content"].strip().lower()
+    except Exception as e:
+        return True, {"error": str(e), "ms": round((time.time() - t0) * 1000)}
+    return ans.startswith("accept"), {"ms": round((time.time() - t0) * 1000)}

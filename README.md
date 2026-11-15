@@ -10,7 +10,7 @@ Duolingo's Video Call with Lily, recreated on-device with PrismML Bonsai-2 and A
 
 <p align="center"><b>The same idea, on one Mac, with WiFi off, and it can see what you hold up:</b></p>
 
-<p align="center"><img src="docs/img/4_phrase.jpg" width="900" alt="Olingo Live: a phrase is explained, the learner says it, and it is scored"></p>
+<p align="center"><img src="docs/img/hero.jpg" width="900" alt="Olingo Live: it has looked at the room and offers to teach the word for something it sees"></p>
 
 <p align="center">Cornell Local AI Hackathon · theme: <b>Recreate</b> · built by <b>Bobby</b> and <b>Lixing</b></p>
 

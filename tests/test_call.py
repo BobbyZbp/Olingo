@@ -225,6 +225,10 @@ class NothingDropped(unittest.TestCase):
         for text, lang in [("What does that mean?", "en"), ("bye", "en"), ("again", "en"), ("I do not know this one", "en"),
                            ("Can you say it slower please", "en")]:
             self.assertTrue(c.not_an_attempt({"text": text, "lang": lang}, "杯子"), text)
+        # a sentence in any language, where one word was asked for (heard in a real call, scored as a bad repeat)
+        self.assertTrue(c.not_an_attempt({"text": "I would like to study cat first", "lang": "es"}, "póster"))
+        self.assertFalse(c.not_an_attempt({"text": "poster", "lang": "es"}, "póster"))
+        self.assertFalse(c.not_an_attempt({"text": "el póster", "lang": "es"}, "póster"))
         for text, lang in [("杯子", "zh"), ("被子", "zh"), ("bei zi", "en"), ("cup", "en")]:
             self.assertFalse(c.not_an_attempt({"text": text, "lang": lang}, "杯子"), text)
 
@@ -247,6 +251,8 @@ class MockCall(unittest.TestCase):
         sp = MockSpeech()
         events = []
         real = (call.brain.answer, call.brain.phrases, call.brain.available, call.brain.same_question)
+        real_accept = call.brain.accepts_offer
+        call.brain.accepts_offer = lambda text, thing: (True, {"ms": 1})
         n = [0]
 
         def fake_answer(*a, **k):
@@ -271,6 +277,7 @@ class MockCall(unittest.TestCase):
             self.assertFalse(t.is_alive())
         finally:
             call.brain.answer, call.brain.phrases, call.brain.available, call.brain.same_question = real
+            call.brain.accepts_offer = real_accept
         kinds = [k for k, _ in events]
         prof = next(d for k, d in events if k == "profile")
         self.assertEqual((prof["l1"], prof["l2"], prof["level"], prof["voice"]), ("en", "zh", 2, "vivian"))
