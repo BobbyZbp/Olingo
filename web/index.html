@@ -20,6 +20,7 @@
   #devrow { margin:14px auto 0; display:flex; gap:10px; align-items:center; justify-content:center; font-size:13.5px; color:var(--dim); flex-wrap:wrap; }
   #devbtn { background:var(--panel2); color:var(--ink); border:1px solid var(--line); border-radius:10px; padding:8px 14px; font-weight:500; font-size:13.5px; }
   #devbtn.on { border-color:var(--accent); color:var(--accent); }
+  #devstat.ok { color:var(--accent); } #devstat.bad { color:var(--bad); }
   #devsel { font:inherit; font-size:13px; color:var(--ink); background:var(--panel2); border:1px solid var(--line); border-radius:10px; padding:7px 10px; max-width:240px; display:none; }
   #edge { position:absolute; inset:0; border-radius:20px; border:3px solid transparent; pointer-events:none; transition:border-color .25s, opacity .25s; }
   #stage.hearing #edge { border-color:var(--you); }
@@ -303,17 +304,25 @@ function agentFrame(buf) {                       // a picture from the device's 
 }
 function setAgent(a, text) {
   agentOn = !!a; $('stage').classList.toggle('agent', agentOn);
-  if ($('devbtn')) { $('devbtn').classList.toggle('on', agentOn); $('devbtn').textContent = agentOn ? 'Disconnect device' : 'Connect Olingo device'; $('devsel').style.display = 'none'; }
-  if ($('devstat')) $('devstat').textContent = text || (agentOn ? (a.mic === 'mac' ? `camera and speaker: ${a.name} over ${a.over} · microphone: this Mac (this Bluetooth link carried ${a.mic_arrived} of 3 s of the device's microphone)` : `camera, microphone and speaker: ${a.name} over ${a.over}${a.simulated ? ' (simulated)' : ''}`) : 'camera, microphone and speaker: this Mac');
+  if ($('devbtn')) { $('devbtn').classList.toggle('on', agentOn); $('devbtn').textContent = agentOn ? `Disconnect ${a.name}` : devLabel; $('devsel').style.display = 'none'; }
+  if ($('devstat')) $('devstat').className = agentOn ? 'ok' : (text && /Could not|went away/.test(text) ? 'bad' : '');
+  if ($('devstat')) $('devstat').textContent = text || (agentOn ? (a.mic === 'mac' ? `✓ Connected to ${a.name} over ${a.over}: its camera and speaker · microphone: this Mac (the link carried ${a.mic_arrived} of 3 s of the device's microphone)` : `✓ Connected to ${a.name} over ${a.over}${a.simulated ? ' (simulated)' : ''}: its camera, microphone and speaker are in use`) : 'camera, microphone and speaker: this Mac');
   $('net').dataset.dev = agentOn ? `${a.name} over ${a.over}` : '';
 }
+let devLabel = 'Connect Olingo device';
+fetch('/api/agent/candidates').then(r => r.json()).then(r => {      // name the button after the device that is there
+  const c = (r.candidates || []).find(c => c.likely);
+  if (c) { devLabel = 'Connect ' + c.label.replace(/ \(.*$/, ''); if ($('devbtn') && !agentOn) $('devbtn').textContent = devLabel; }
+}).catch(() => {});
 if ($('devbtn')) $('devbtn').onclick = async () => {
   if (agentOn) return send({ type: 'agent', action: 'disconnect' });
   const r = await (await fetch('/api/agent/candidates')).json();
   if (!r.candidates.length) { $('devstat').textContent = 'No device found. Pair it over Bluetooth (or plug it in), then try again.'; return; }
-  if (r.candidates.length === 1 || $('devsel').style.display !== 'none') {
-    const target = $('devsel').style.display !== 'none' ? $('devsel').value : r.candidates[0].target;
-    $('devstat').textContent = 'Connecting…'; send({ type: 'agent', action: 'connect', target });
+  const likely = r.candidates.filter(c => c.likely);       // the Pi (Luma), when it is paired: no picking needed
+  if (r.candidates.length === 1 || likely.length === 1 || $('devsel').style.display !== 'none') {
+    const pick = $('devsel').style.display !== 'none' ? r.candidates.find(c => c.target === $('devsel').value) : (likely[0] || r.candidates[0]);
+    $('devstat').textContent = `Connecting to ${pick.label}… (a few seconds)`; $('devstat').className = '';
+    send({ type: 'agent', action: 'connect', target: pick.target });
   } else {                                        // several possible devices: let the person pick, then press again
     $('devsel').innerHTML = r.candidates.map(c => `<option value="${esc(c.target)}">${esc(c.label)}</option>`).join('');
     $('devsel').style.display = 'inline-block'; $('devstat').textContent = 'Pick the device, then press Connect again.';

@@ -135,6 +135,11 @@ class Session:
         self.scene.reset()
         self.push("agent", state="connected", **link.summary(), camera=info.get("camera"),
                   mic="device" if self.agent_mic else "mac", mic_arrived=heard)
+        if self.speech and not (self.call and self.call.running):
+            try:                                           # said by the device itself: you hear that it works
+                self.speech.speak(f"{link.info.get('name', 'The device')} is connected.", lang="en")
+            except Exception:
+                pass
 
     def disconnect_agent(self, lost: bool = False, quiet: bool = False):
         link, self.agent = self.agent, None
