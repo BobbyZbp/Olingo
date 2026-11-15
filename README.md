@@ -3,9 +3,14 @@
 <p align="center"><b>A language video call that can see you, running entirely on one Mac with WiFi off.</b><br>
 Duolingo's Video Call with Lily, recreated on-device with PrismML Bonsai-2 and Argmax.</p>
 
+<p align="center"><img src="docs/img/duolingo_video_call.png" width="820" alt="Duolingo's Video Call with Lily: the lesson path, Calling Lily, and Lily on the call"></p>
+<p align="center"><sub>This is what we set out to recreate: Duolingo's Video Call with Lily. Image: Duolingo, from <a href="https://blog.duolingo.com/video-call/">blog.duolingo.com/video-call</a>.</sub></p>
+
 <p align="center"><i>Lily can't see you. Olingo can, and no one else ever will. It remembers your words, not your face.</i></p>
 
-<p align="center"><img src="docs/img/4_phrase.jpg" width="900" alt="A call: a phrase is explained, the learner says it, and it is scored"></p>
+<p align="center"><b>The same idea, on one Mac, with WiFi off, and it can see what you hold up:</b></p>
+
+<p align="center"><img src="docs/img/4_phrase.jpg" width="900" alt="Olingo Live: a phrase is explained, the learner says it, and it is scored"></p>
 
 <p align="center">Cornell Local AI Hackathon · theme: <b>Recreate</b> · built by <b>Bobby</b> and <b>Lixing</b></p>
 
