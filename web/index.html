@@ -160,6 +160,11 @@
   .t0 { background:#2a3340; color:#cfd8e3; } .t1 { background:#342d63; color:#cfc8ff; } .t2 { background:#124336; color:#8ff0cd; }
   .turn .m { color:var(--dim); margin-top:2px; font-variant-numeric:tabular-nums; }
   #hud { position:absolute; right:16px; bottom:150px; width:330px; display:none; background:rgba(11,14,19,.92); border:1px solid var(--line); border-radius:12px; padding:10px 12px; font:11.5px/1.6 ui-monospace, "SF Mono", Menlo, monospace; color:#cbd3df; z-index:6; white-space:pre-wrap; }
+  /* With the device on the call the page goes dark: the device is what you talk to, this Mac only thinks.
+     Only then; a call on this Mac's own camera looks as before. A click or Esc shows the page again. */
+  #screenoff { position:fixed; inset:0; z-index:90; background:#000; display:none; cursor:none; }
+  body.duo-off #screenoff { display:block; }
+  #screenoff span { position:absolute; left:0; right:0; bottom:16px; text-align:center; font-size:12px; color:#30363f; }
 </style>
 </head>
 <body>
@@ -232,6 +237,7 @@
   </div>
 </div>
 <canvas id="cv" width="640" height="360" style="display:none"></canvas>
+<div id="screenoff"><span>The device is on the call · screen off · click or Esc to show it</span></div>
 
 <script>
 const $ = id => document.getElementById(id);
@@ -303,7 +309,9 @@ async function showDeck() {
 if ($('deckbtn')) $('deckbtn').onclick = () => showDeck();
 
 /* ---------- the Olingo device: its camera, microphone and speaker take the place of this Mac's ---------- */
-let agentOn = false, agentUrl = null;
+let agentOn = false, agentUrl = null, peek = false;
+function screenOff() { document.body.classList.toggle('duo-off', agentOn && inCall && !MIRROR && !peek); }   // dark only: device + call
+$('screenoff').onclick = () => { peek = true; screenOff(); };
 function agentFrame(buf) {                       // a picture from the device's camera: shown, never stored
   const url = URL.createObjectURL(new Blob([buf], { type: 'image/jpeg' }));
   const pic = $('agentcam'); pic.onload = () => pic.classList.toggle('tall', pic.naturalHeight > pic.naturalWidth);
@@ -317,6 +325,7 @@ function setAgent(a, text) {
   if ($('rotbtn')) $('rotbtn').style.display = agentOn ? 'inline-block' : 'none';
   if ($('devstat')) $('devstat').textContent = text || (agentOn ? (a.mic === 'mac' ? `✓ Connected to ${a.name} over ${a.over}: its camera and speaker · microphone: this Mac (the link carried ${a.mic_arrived} of 3 s of the device's microphone)` : `✓ Connected to ${a.name} over ${a.over}${a.simulated ? ' (simulated)' : ''}: its camera, microphone and speaker are in use`) : 'camera, microphone and speaker: this Mac');
   $('net').dataset.dev = agentOn ? `${a.name} over ${a.over}` : '';
+  screenOff();
 }
 let devLabel = 'Connect Olingo device';
 if ($('rotbtn')) $('rotbtn').onclick = () => send({ type: 'agent', action: 'rotate' });
@@ -359,6 +368,7 @@ $('hang').onclick = () => { send({ type: 'hangup' }); $('hang').textContent = 'E
 function setPtt() { $('ptt').textContent = 'Hold Space to talk: ' + (pttMode ? 'on' : 'off'); $('ptt').classList.toggle('on', pttMode); }
 $('ptt').onclick = () => { pttMode = !pttMode; setPtt(); send({ type: 'ptt_mode', on: pttMode }); };
 addEventListener('keydown', e => {
+  if (e.code === 'Escape' && agentOn && inCall) { peek = !peek; screenOff(); }
   if (e.code === 'KeyD' && !e.metaKey && !e.ctrlKey) { hud = !hud; $('hud').style.display = hud ? 'block' : 'none'; drawHud(); }
   if (e.code === 'Space' && inCall && pttMode) { e.preventDefault(); if (!pttDown) { pttDown = true; $('ptt').classList.add('down'); send({ type: 'ptt', down: true }); } }
 });
@@ -480,7 +490,7 @@ function handle(m) {
       if (m.phase === 'ending') $('hang').textContent = 'Ending…';
       break;
     case 'blocked':
-      inCall = false; clearInterval(sendTimer);
+      inCall = false; screenOff(); clearInterval(sendTimer);
       overlay('<div id="blocked"><h1 style="font-size:24px"><b>The call could not start</b></h1><p style="color:var(--ink)">' + esc(m.message) + '</p><button onclick="location.reload()" style="background:var(--accent);color:var(--accent-ink)">Try again</button></div>');
       break;
     case 'warm': addTurn(0, 'while it rang: models warmed, first look at the room', `Bonsai 9B ${m.bonsai_9b_ms} ms${m.bonsai_4b_ms ? ' · 4B ' + m.bonsai_4b_ms + ' ms' : ''}${m.room_ms ? ' · first look ' + fmtMs(m.room_ms) : ''} · ${m.lines_made} voice lines made`);
@@ -561,13 +571,13 @@ function handle(m) {
 
 function beginCall() {
   if (inCall) return;
-  inCall = true; $('overlay').style.display = 'none'; $('controls').style.display = 'flex'; $('hang').textContent = 'Hang up'; t0 = Date.now();
+  inCall = true; peek = false; screenOff(); $('overlay').style.display = 'none'; $('controls').style.display = 'flex'; $('hang').textContent = 'Hang up'; t0 = Date.now();
   clearInterval(clockTimer);
   clockTimer = setInterval(() => { const s = Math.floor((Date.now() - t0) / 1000); $('clock').textContent = String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0'); }, 500);
 }
 
 function showReceipt(r) {
-  inCall = false; clearInterval(sendTimer); clearInterval(clockTimer); thinking(false);
+  inCall = false; screenOff(); clearInterval(sendTimer); clearInterval(clockTimer); thinking(false);
   if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
   $('controls').style.display = 'none'; $('stage').classList.remove('hearing', 'looking');
   const learned = r.words.filter(w => w.drilled);
