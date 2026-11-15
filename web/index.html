@@ -1,0 +1,561 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Olingo Live</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root { --bg:#0b0e13; --panel:#141921; --panel2:#1b212b; --line:#252c38; --ink:#eef1f5; --dim:#8a94a6; --accent:#5ee0b0; --accent-ink:#06281c;
+          --you:#8fb8ff; --warn:#f5c451; --bad:#ff6b6b; --t0:#9aa7b8; --t1:#b4a7ff; --t2:#5ee0b0; }
+  * { box-sizing:border-box; }
+  html, body { margin:0; height:100%; background:var(--bg); color:var(--ink); font:15px/1.4 -apple-system, "SF Pro Text", "PingFang SC", system-ui, sans-serif; overflow:hidden; }
+  button { font:inherit; border:0; border-radius:999px; padding:12px 26px; cursor:pointer; font-weight:600; }
+  #app { display:grid; grid-template-columns:minmax(0,1fr) 372px; gap:14px; height:100%; padding:14px; }
+
+  /* ---------- stage ---------- */
+  #stage { position:relative; border-radius:20px; overflow:hidden; background:#000; min-height:0; }
+  #cam { width:100%; height:100%; object-fit:cover; transform:scaleX(-1); display:block; background:#05070a; }
+  #agentcam { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:none; background:#05070a; }
+  #stage.agent #agentcam { display:block; } #stage.agent #cam { visibility:hidden; }
+  #devrow { margin:14px auto 0; display:flex; gap:10px; align-items:center; justify-content:center; font-size:13.5px; color:var(--dim); flex-wrap:wrap; }
+  #devbtn { background:var(--panel2); color:var(--ink); border:1px solid var(--line); border-radius:10px; padding:8px 14px; font-weight:500; font-size:13.5px; }
+  #devbtn.on { border-color:var(--accent); color:var(--accent); }
+  #devsel { font:inherit; font-size:13px; color:var(--ink); background:var(--panel2); border:1px solid var(--line); border-radius:10px; padding:7px 10px; max-width:240px; display:none; }
+  #edge { position:absolute; inset:0; border-radius:20px; border:3px solid transparent; pointer-events:none; transition:border-color .25s, opacity .25s; }
+  #stage.hearing #edge { border-color:var(--you); }
+  #stage.looking #edge { border-color:var(--accent); animation:glow 1s ease-in-out infinite alternate; }
+  @keyframes glow { from { opacity:.45; } to { opacity:1; } }
+  #pills { position:absolute; left:16px; top:14px; display:flex; gap:8px; flex-wrap:wrap; font-size:12.5px; max-width:70%; }
+  .pill { background:rgba(11,14,19,.78); border:1px solid var(--line); border-radius:999px; padding:5px 11px; white-space:nowrap; font-variant-numeric:tabular-nums; }
+  .pill b { color:var(--accent); font-weight:600; }
+  .dot { display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--bad); margin-right:6px; animation:blink 1.6s infinite; }
+  @keyframes blink { 50% { opacity:.25; } }
+  #avatar { position:absolute; right:18px; top:16px; width:116px; text-align:center; }
+  #disc { position:relative; width:104px; height:104px; margin:0 auto; border-radius:50%; background:#1b2733; border:2px solid var(--line); display:grid; place-items:center; overflow:visible; }
+  #ring { position:absolute; inset:-7px; border-radius:50%; border:3px solid var(--accent); opacity:0; will-change:transform,opacity; }
+  #face { width:88px; height:88px; }
+  #eyes { transform-origin:42px 42px; animation:blinkeyes 4.6s infinite; }
+  @keyframes blinkeyes { 0%, 94%, 100% { transform:scaleY(1); } 96.5% { transform:scaleY(.08); } }
+  #ostate { margin-top:8px; font-size:12px; color:var(--dim); height:16px; }
+  #dots { display:none; gap:4px; justify-content:center; margin-top:4px; }
+  #dots i { width:6px; height:6px; border-radius:50%; background:var(--accent); animation:bob .9s infinite; }
+  #dots i:nth-child(2) { animation-delay:.15s; } #dots i:nth-child(3) { animation-delay:.3s; }
+  @keyframes bob { 0%,100% { transform:translateY(0); opacity:.4; } 50% { transform:translateY(-5px); opacity:1; } }
+  #saw { position:absolute; left:16px; bottom:150px; opacity:0; transform:translateY(8px); transition:opacity .3s, transform .3s; pointer-events:none; }
+  #saw.on { opacity:1; transform:none; }
+  #saw canvas { display:block; width:150px; height:84px; border-radius:10px; border:2px solid var(--accent); }
+  #saw span { display:block; margin-top:5px; font-size:11.5px; color:var(--accent); background:rgba(11,14,19,.78); border-radius:6px; padding:2px 7px; }
+
+  #subs { position:absolute; left:0; right:0; bottom:0; padding:70px 28px 74px; background:linear-gradient(transparent, rgba(0,0,0,.86) 55%); }
+  .who { font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--dim); margin-bottom:2px; }
+  #o-text { font-size:26px; font-weight:600; line-height:1.35; min-height:36px; }
+  #o-text .l2 { color:var(--accent); }
+  #o-text ruby { margin:0 1px; } #o-text rt { font-size:12px; font-weight:500; color:var(--accent); opacity:.9; }
+  #o-gloss { font-size:14px; color:var(--dim); min-height:0; }
+  #drill { display:none; align-items:flex-end; gap:14px; margin:8px 0 2px; }
+  #drill .zi ruby { font-size:44px; font-weight:700; margin:0 3px; transition:color .3s; }
+  #drill .zi rt { font-size:15px; font-weight:500; color:var(--accent); }
+  #drill .zi .w { font-size:38px; font-weight:700; margin-right:10px; transition:color .3s; }
+  #drill .meta { font-size:14px; color:var(--dim); padding-bottom:9px; }
+  #drill.pulse .zi { animation:pop .5s ease-out; }
+  @keyframes pop { 0% { transform:scale(.92); } 60% { transform:scale(1.06); } 100% { transform:scale(1); } }
+  /* one accent colour only: the new language, and what came through clearly; the rest stays plain */
+  .c-good { color:var(--accent); } .c-mid, .c-bad { color:var(--dim); }
+  #you { margin-top:12px; min-height:46px; }
+  #listen { display:none; align-items:center; gap:12px; height:30px; }
+  #listen .lab { font-size:13.5px; font-weight:600; color:var(--you); min-width:150px; }
+  #meter { display:flex; align-items:center; gap:3px; height:30px; }
+  #meter b { width:4px; height:4px; border-radius:2px; background:var(--you); will-change:transform; }
+  #y-text { font-size:17px; color:var(--ink); opacity:.82; }
+  #y-text .w { margin-right:5px; }
+
+  #controls { position:absolute; left:0; right:0; bottom:16px; display:none; justify-content:center; gap:10px; }
+  #hang { background:var(--bad); color:#fff; }
+  #ptt { background:rgba(27,33,43,.9); color:var(--ink); border:1px solid var(--line); font-weight:500; font-size:13.5px; }
+  #ptt.on { border-color:var(--you); color:var(--you); } #ptt.down { background:var(--you); color:#06162e; }
+  #banner { position:absolute; left:50%; top:14px; transform:translateX(-50%); display:none; background:#3a2a10; border:1px solid var(--warn); color:#ffe2a3; border-radius:12px; padding:8px 14px; font-size:13px; max-width:62%; text-align:center; z-index:5; }
+
+  /* ---------- overlays ---------- */
+  #overlay { position:absolute; inset:0; display:grid; place-items:center; background:rgba(11,14,19,.9); text-align:center; z-index:10; padding:24px; }
+  #overlay h1 { font-size:38px; margin:0 0 8px; letter-spacing:-.02em; }
+  #overlay p { color:var(--dim); margin:0 0 20px; }
+  #start { background:var(--accent); color:var(--accent-ink); font-size:17px; padding:14px 34px; }
+  #start:disabled { opacity:.45; cursor:default; }
+  #opts { margin-top:14px; font-size:13.5px; color:var(--dim); display:flex; gap:18px; justify-content:center; flex-wrap:wrap; }
+  #setup { display:grid; grid-template-columns:auto auto; gap:10px 14px; justify-content:center; align-items:center; margin:0 auto 22px; text-align:left; }
+  #setup label { color:var(--dim); font-size:13.5px; text-align:right; }
+  #setup select { font:inherit; color:var(--ink); background:var(--panel2); border:1px solid var(--line); border-radius:10px; padding:8px 12px; min-width:200px; }
+  .seg { display:inline-flex; justify-self:start; border:1px solid var(--line); border-radius:10px; overflow:hidden; }
+  .seg button { border-radius:0; padding:8px 14px; background:var(--panel2); color:var(--dim); font-weight:500; font-size:14px; }
+  .seg button.on { background:var(--accent); color:var(--accent-ink); font-weight:600; }
+  #voicetest { background:var(--panel2); color:var(--ink); border:1px solid var(--line); border-radius:10px; padding:8px 12px; font-weight:500; font-size:13.5px; white-space:nowrap; }
+  #voicetest.playing { border-color:var(--accent); color:var(--accent); }
+  #deckbtn { margin-top:14px; background:transparent; color:var(--you); border:1px solid var(--line); font-weight:500; font-size:13.5px; padding:8px 16px; }
+  #ringbar { width:260px; height:6px; border-radius:3px; background:#232a35; margin:6px auto 10px; overflow:hidden; }
+  #ringfill { display:block; height:100%; width:0; background:var(--accent); transition:width .4s ease; }
+  #ringpct { color:var(--accent); font-size:15px; font-variant-numeric:tabular-nums; }
+  .flash { display:flex; flex-wrap:wrap; gap:10px; margin:6px 0 2px; max-height:230px; overflow:auto; }
+  .fc { width:150px; height:104px; perspective:600px; cursor:pointer; }
+  .fc > div { position:relative; width:100%; height:100%; transition:transform .45s; transform-style:preserve-3d; }
+  .fc.flip > div { transform:rotateY(180deg); }
+  .fc .f, .fc .b { position:absolute; inset:0; backface-visibility:hidden; border-radius:12px; border:1px solid var(--line); background:var(--panel2); padding:9px 10px; display:flex; flex-direction:column; justify-content:center; text-align:center; overflow:hidden; }
+  .fc .b { transform:rotateY(180deg); text-align:left; justify-content:flex-start; font-size:11.5px; line-height:1.45; color:var(--dim); }
+  .fc .f .zh { font-size:26px; font-weight:700; font-family:-apple-system, "PingFang SC", system-ui; } .fc .f .py { color:var(--accent); font-size:12.5px; margin-top:2px; }
+  .fc .f .bar { height:3px; border-radius:2px; background:#2a3340; margin-top:8px; overflow:hidden; } .fc .f .bar i { display:block; height:100%; background:var(--accent); }
+  .fc .b b { color:var(--ink); font-size:13.5px; } .fc .b .ph { color:var(--accent); font-family:-apple-system, "PingFang SC", system-ui; }
+  #deck { text-align:left; background:var(--panel); border:1px solid var(--line); border-radius:18px; padding:22px 26px; width:min(760px, 92%); max-height:86%; overflow:auto; }
+  #deck h2 { margin:0 0 4px; font-size:22px; } #deck .day { margin:14px 0 6px; font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--dim); }
+  #room { margin-top:8px; font-size:12px; color:var(--dim); } #room b { color:var(--ink); font-weight:500; }
+  .tonefix { color:var(--warn); font-weight:600; }
+  #boot { margin-top:14px; font-size:13px; min-height:18px; }
+  .ringer { width:118px; height:118px; margin:0 auto 22px; border-radius:50%; background:var(--accent); position:relative; display:grid; place-items:center; }
+  .ringer::before, .ringer::after { content:""; position:absolute; inset:0; border-radius:50%; border:2px solid var(--accent); animation:ringout 1.6s ease-out infinite; }
+  .ringer::after { animation-delay:.8s; }
+  @keyframes ringout { from { transform:scale(1); opacity:.7; } to { transform:scale(1.9); opacity:0; } }
+  #blocked { max-width:560px; background:var(--panel); border:1px solid var(--bad); border-radius:16px; padding:22px 26px; }
+  #blocked b { color:var(--bad); }
+  #receipt { text-align:left; background:var(--panel); border:1px solid var(--line); border-radius:18px; padding:22px 28px; width:min(700px, 94%); max-height:92%; overflow:auto; }
+  #receipt h2 { margin:0 0 10px; font-size:13px; letter-spacing:.12em; text-transform:uppercase; color:var(--dim); font-weight:600; }
+  #receipt table { width:100%; border-collapse:collapse; font:13px/1.75 ui-monospace, "SF Mono", Menlo, monospace; }
+  #receipt td:first-child { color:var(--dim); width:118px; vertical-align:top; } #receipt b { color:var(--accent); font-weight:600; }
+  #receipt .tag { margin-top:16px; font-size:19px; font-weight:600; }
+  #receipt .words { font-family:-apple-system, "PingFang SC", system-ui; font-size:17px; }
+
+  /* ---------- side ---------- */
+  #side { display:flex; flex-direction:column; gap:10px; min-height:0; }
+  .box { background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:12px 14px; }
+  .box h3 { margin:0 0 8px; font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--dim); font-weight:600; display:flex; justify-content:space-between; }
+  .box h3 span { letter-spacing:0; text-transform:none; font-size:12px; color:var(--ink); font-weight:500; }
+  #mixbar { height:8px; border-radius:4px; background:#232a35; overflow:hidden; }
+  #mixfill { height:100%; width:100%; background:var(--accent); transform-origin:left; transform:scaleX(0); transition:transform .6s ease; }
+  #mixlab { margin-top:7px; font-size:13.5px; } #mixlab b { color:var(--accent); font-size:17px; }
+  .step { display:grid; grid-template-columns:30px 1fr auto; align-items:center; gap:10px; padding:7px 2px; color:var(--dim); position:relative; }
+  .step + .step { border-top:1px solid var(--line); }
+  .step .ic { width:30px; height:30px; border-radius:9px; background:#202733; display:grid; place-items:center; transition:background .2s, transform .2s, color .2s; }
+  .step .ic svg { width:17px; height:17px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+  .step b { display:block; font-size:14px; font-weight:600; color:var(--ink); opacity:.5; transition:opacity .2s; }
+  .step span { font-size:11.5px; }
+  .step i { font-style:normal; font-size:12px; font-variant-numeric:tabular-nums; text-align:right; white-space:nowrap; }
+  .step.on b { opacity:1; } .step.on .ic { background:var(--accent); color:var(--accent-ink); transform:scale(1.08); } .step.on i { color:var(--accent); }
+  #inmem { margin-top:8px; font-size:11.5px; line-height:1.5; color:var(--dim); } #inmem b { color:var(--ink); font-weight:600; }
+  #tierbar { display:grid; grid-template-columns:repeat(3,1fr); gap:6px; margin-top:8px; }
+  #tierbar div { text-align:center; border-radius:9px; padding:6px 2px; font-size:10.5px; background:#1d2430; color:var(--dim); transition:background .25s, color .25s; }
+  #tierbar div b { display:block; font-size:18px; color:var(--ink); font-variant-numeric:tabular-nums; }
+  #tb0.hit { background:var(--t0); color:#10151c; } #tb1.hit { background:var(--t1); color:#16113a; } #tb2.hit { background:var(--t2); color:var(--accent-ink); }
+  #tierbar div.hit b { color:inherit; }
+  #nomodel { margin-top:8px; font-size:12.5px; color:var(--dim); } #nomodel b { color:var(--ink); }
+  #cards { display:flex; flex-wrap:wrap; gap:6px; max-height:132px; overflow:auto; }
+  .card { border:1px solid var(--line); border-radius:10px; padding:5px 10px; background:var(--panel2); animation:pop .4s ease-out; }
+  .card .zh { font-size:19px; font-weight:700; } .card .py { color:var(--accent); font-size:11.5px; margin-left:5px; } .card .en { color:var(--dim); font-size:12px; display:block; }
+  .card.seen .zh { color:var(--dim); }
+  #empty { color:var(--dim); font-size:13px; }
+  #turns { flex:1; min-height:0; overflow:auto; font-size:12.5px; }
+  .turn { padding:7px 0; border-top:1px solid var(--line); } .turn:first-child { border-top:0; }
+  .tier { display:inline-block; border-radius:6px; padding:1px 7px; font-weight:700; font-size:10.5px; margin-right:6px; letter-spacing:.04em; }
+  .t0 { background:#2a3340; color:#cfd8e3; } .t1 { background:#342d63; color:#cfc8ff; } .t2 { background:#124336; color:#8ff0cd; }
+  .turn .m { color:var(--dim); margin-top:2px; font-variant-numeric:tabular-nums; }
+  #hud { position:absolute; right:16px; bottom:150px; width:330px; display:none; background:rgba(11,14,19,.92); border:1px solid var(--line); border-radius:12px; padding:10px 12px; font:11.5px/1.6 ui-monospace, "SF Mono", Menlo, monospace; color:#cbd3df; z-index:6; white-space:pre-wrap; }
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="stage">
+    <video id="cam" autoplay playsinline muted></video>
+    <img id="agentcam" alt="">
+    <div id="edge"></div>
+    <div id="pills">
+      <span class="pill"><span class="dot"></span><span id="clock">00:00</span></span>
+      <span class="pill" id="net">offline · <b>0</b> external connections</span>
+      <span class="pill" id="seen"><b>0</b> frames seen · <b>0</b> looks</span>
+    </div>
+    <div id="banner"></div>
+    <div id="avatar">
+      <div id="disc"><div id="ring"></div>
+        <svg id="face" viewBox="0 0 84 84"><circle cx="19" cy="20" r="11" fill="#c9965a"/><circle cx="65" cy="20" r="11" fill="#c9965a"/><circle cx="19" cy="20" r="5.5" fill="#f6d9b0"/><circle cx="65" cy="20" r="5.5" fill="#f6d9b0"/>
+          <circle cx="42" cy="46" r="32" fill="#e9b877"/><ellipse cx="42" cy="56" rx="19" ry="15" fill="#fbe7c6"/>
+          <g id="eyes"><circle cx="29" cy="42" r="8.5" fill="#2a1a10"/><circle cx="55" cy="42" r="8.5" fill="#2a1a10"/><circle cx="31.8" cy="39" r="3" fill="#fff"/><circle cx="57.8" cy="39" r="3" fill="#fff"/><circle cx="27" cy="45" r="1.4" fill="#fff" opacity=".7"/><circle cx="53" cy="45" r="1.4" fill="#fff" opacity=".7"/></g>
+          <circle cx="20" cy="55" r="5" fill="#ff9d8a" opacity=".55"/><circle cx="64" cy="55" r="5" fill="#ff9d8a" opacity=".55"/>
+          <path d="M38.5 52 h7 l-3.5 4 z" fill="#5a3320"/><ellipse id="mouth" cx="42" cy="62" rx="6" ry="1.8" fill="#5a3320"/></svg>
+      </div>
+      <div id="ostate">Olingo</div><div id="dots"><i></i><i></i><i></i></div>
+    </div>
+    <div id="saw"><canvas id="sawcv" width="300" height="168"></canvas><span>1 small frame → Bonsai</span></div>
+    <div id="hud"></div>
+    <div id="subs">
+      <div class="who">Olingo</div>
+      <div id="o-text"></div><div id="o-gloss"></div>
+      <div id="drill"><div class="zi"></div><div class="meta"></div></div>
+      <div id="you"><div class="who">You</div>
+        <div id="listen"><span class="lab" id="listen-lab">Listening… speak now</span><div id="meter"></div></div>
+        <div id="y-text"></div></div>
+    </div>
+    <div id="controls"><button id="ptt" title="For noisy rooms">Hold Space to talk: off</button><button id="hang">Hang up</button></div>
+    <div id="overlay">
+      <div id="intro">
+        <h1>Olingo Live</h1>
+        <p>An offline language video call that can see you.<br>Bonsai and Argmax, running on this Mac. Nothing leaves it.</p>
+        <div id="setup">
+          <label>I speak</label><div class="seg" id="l1seg"><button data-v="en" class="on">English</button><button data-v="zh">中文</button><button data-v="fr">Français</button><button data-v="ja">日本語</button></div>
+          <label>I want to learn</label><select id="l2sel"></select>
+          <label>My level</label><div class="seg" id="lvseg"><button data-v="1" class="on">Beginner</button><button data-v="2">Intermediate</button><button data-v="3">Advanced</button></div>
+          <label>Olingo's voice</label><div style="display:flex;gap:8px;align-items:center"><select id="voicesel" style="min-width:150px"><option value="">Automatic</option></select><button id="voicetest" title="Hear this voice">▶ Hear it</button></div>
+        </div>
+        <button id="start" disabled>Start call</button>
+        <div id="opts"><label><input type="checkbox" id="focusbox" checked> Focus on the nearest voice</label>
+          <label><input type="checkbox" id="pttbox"> Noisy room: hold Space to talk</label></div>
+        <div id="devrow"><button id="devbtn">Connect Olingo device</button><select id="devsel"></select><span id="devstat">camera, microphone and speaker: this Mac</span></div>
+        <div id="boot">Loading the speech models…</div>
+        <button id="deckbtn" style="display:none">My flashcards</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="side">
+    <div class="box"><h3>This call <span id="profile">–</span></h3>
+      <div id="mixbar"><div id="mixfill"></div></div>
+      <div id="mixlab">This call is <b id="mixpct">0%</b> <span id="mixlang">new language</span></div><div id="room"></div></div>
+    <div class="box"><h3>On this Mac, right now</h3>
+      <div class="step" id="s-hear"><div class="ic"><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></div><div><b>Hears</b><span>Argmax WhisperKit · Neural Engine</span></div><i>–</i></div>
+      <div class="step" id="s-see"><div class="ic"><svg viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></div><div><b>Sees</b><span>Bonsai-2 9B · GPU · one small frame, only when needed</span></div><i>–</i></div>
+      <div class="step" id="s-think"><div class="ic"><svg viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0-4 10.5V17h8v-3.5A6 6 0 0 0 12 3zM9 21h6"/></svg></div><div><b>Thinks</b><span id="think-who">Bonsai-2 · GPU</span></div><i>–</i></div>
+      <div class="step" id="s-speak"><div class="ic"><svg viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9H4zM16 9a4 4 0 0 1 0 6M19 6a8 8 0 0 1 0 12"/></svg></div><div><b>Speaks</b><span>Argmax TTSKit · Neural Engine</span></div><i>–</i></div>
+      <div id="tierbar"><div id="tb0"><b>0</b>no model</div><div id="tb1"><b>0</b><span id="tb1lab">Bonsai-2, text only</span></div><div id="tb2"><b>0</b>Bonsai-2 9B + one frame</div></div>
+      <div id="nomodel">Responses that needed no model: <b id="nmp">–</b></div>
+      <div id="inmem"></div></div>
+    <div class="box"><h3>My words <span id="wcount"></span></h3><div id="cards"><div id="empty">Words you learn in this call appear here.</div></div></div>
+    <div class="box" id="turns"><h3>Each response: tier · time · tokens</h3><div id="tlist"></div></div>
+  </div>
+</div>
+<canvas id="cv" width="640" height="360" style="display:none"></canvas>
+
+<script>
+const $ = id => document.getElementById(id);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const DEMO = new URLSearchParams(location.search).has('demo');
+let ws, stream, sendTimer, clockTimer, t0 = 0, looks = 0, frames = 0, vu = 0, speaking = 0, inCall = false, pttMode = false, pttDown = false;
+let l2name = 'new language', lastTurn = null, sceneInfo = '', memInfo = '', netInfo = '', hud = false;
+const tiers = [0, 0, 0];
+const cls = p => p >= 0.75 ? 'c-good' : p >= 0.5 ? 'c-mid' : 'c-bad';
+const step = (id, on, note) => { const e = $(id); e.classList.toggle('on', on); if (note != null) e.querySelector('i').textContent = note; };
+const fmtMs = v => v == null ? '–' : (v >= 1000 ? (v / 1000).toFixed(1) + ' s' : v + ' ms');
+const send = o => { if (ws && ws.readyState === 1) ws.send(JSON.stringify(o)); };
+
+/* ---------- listening meter ---------- */
+const NB = 30, bars = [], hist = new Array(NB).fill(0);
+for (let i = 0; i < NB; i++) { const b = document.createElement('b'); $('meter').appendChild(b); bars.push(b); }
+function meter(v) { hist.push(v); hist.shift(); for (let i = 0; i < NB; i++) bars[i].style.transform = `scaleY(${(1 + hist[i] * 7).toFixed(2)})`; }
+
+/* ---------- connection ---------- */
+function connect() {
+  ws = new WebSocket(`ws://${location.host}/ws`);
+  ws.binaryType = 'arraybuffer';
+  ws.onmessage = e => { if (typeof e.data === 'string') handle(JSON.parse(e.data)); else agentFrame(e.data); };
+  ws.onclose = () => { if (!DEMO) setTimeout(connect, 1000); };
+}
+if (!DEMO) connect();
+
+/* ---------- the start screen: language and level are picked here, so the ringing time warms exactly what is needed */
+const choice = Object.assign({ l1: 'en', l2: 'zh', level: 1, voice: '' }, JSON.parse(localStorage.getItem('olingo') || '{}'));
+function seg(id, key, cast) {
+  const box = $(id); if (!box) return;
+  const paint = () => box.querySelectorAll('button').forEach(b => b.classList.toggle('on', String(cast(b.dataset.v)) === String(choice[key])));
+  box.querySelectorAll('button').forEach(b => b.onclick = () => { choice[key] = cast(b.dataset.v); paint(); fillLangs(); });
+  paint();
+}
+let LANGS = [{ code: 'zh', name: 'Chinese' }, { code: 'es', name: 'Spanish' }, { code: 'en', name: 'English' }];
+function fillLangs() {
+  const sel = $('l2sel'); if (!sel) return;
+  const opts = LANGS.filter(l => l.code !== choice.l1);
+  if (!opts.some(l => l.code === choice.l2)) choice.l2 = opts[0].code;
+  sel.innerHTML = opts.map(l => `<option value="${l.code}"${l.code === choice.l2 ? ' selected' : ''}>${esc(l.name)}</option>`).join('');
+  sel.onchange = () => { choice.l2 = sel.value; };
+}
+seg('l1seg', 'l1', String); seg('lvseg', 'level', Number); fillLangs();
+const hearVoice = () => send({ type: 'preview', voice: choice.voice, l1: choice.l1, l2: choice.l2 });
+if ($('voicesel')) $('voicesel').onchange = () => { choice.voice = $('voicesel').value; hearVoice(); };   // picking a voice plays it
+if ($('voicetest')) $('voicetest').onclick = hearVoice;
+async function openCamera() {
+  if (stream) return;
+  stream = await navigator.mediaDevices.getUserMedia({ video: { width: 1280, height: 720 }, audio: false });
+  $('cam').srcObject = stream;
+}
+if (!DEMO) openCamera().catch(() => {});       // the picture is on screen at once; no frame is sent before Start
+
+function fcHtml(c) {
+  const ph = (c.phrases || []).map(p => `<div><span class="ph">${esc(p.l2)}</span> ${esc(p.l1)}</div>`).join('');
+  return `<div class="fc" onclick="this.classList.toggle('flip')"><div><div class="f"><div class="zh ${c.drilled ? cls(c.score) : ''}">${esc(c.l2)}</div><div class="py">${esc(c.reading || '')}</div>${c.drilled ? `<div class="bar"><i style="width:${Math.round(c.score * 100)}%"></i></div>` : ''}</div>
+    <div class="b"><b>${esc(c.l1)}</b>${c.drilled ? `<div>clarity ${Math.round(c.score * 100)}%</div>` : '<div>heard, not practised yet</div>'}${ph}${c.example ? `<div>“${esc(c.example)}”</div>` : ''}</div></div></div>`;
+}
+async function showDeck() {
+  const r = await (await fetch('/api/deck')).json(), days = {};
+  r.cards.forEach(c => (days[c.date || ''] = days[c.date || ''] || []).push(c));
+  const html = Object.keys(days).sort().reverse().map(d => `<div class="day">${esc(d)} · ${days[d].length} word${days[d].length === 1 ? '' : 's'}</div><div class="flash">${days[d].map(fcHtml).join('')}</div>`).join('');
+  overlay(`<div id="deck"><h2>My flashcards</h2><div style="color:var(--dim);font-size:13.5px">Click a card to turn it. Only words are kept: never audio, never pictures.</div>${html || '<p style="margin-top:16px">No words yet. Start a call and show Olingo something.</p>'}<div style="margin-top:16px"><button onclick="location.reload()" style="background:var(--accent);color:var(--accent-ink)">Back</button></div></div>`);
+}
+if ($('deckbtn')) $('deckbtn').onclick = () => showDeck();
+
+/* ---------- the Olingo device: its camera, microphone and speaker take the place of this Mac's ---------- */
+let agentOn = false, agentUrl = null;
+function agentFrame(buf) {                       // a picture from the device's camera: shown, never stored
+  const url = URL.createObjectURL(new Blob([buf], { type: 'image/jpeg' }));
+  $('agentcam').src = url; if (agentUrl) URL.revokeObjectURL(agentUrl); agentUrl = url;
+  frames++; if (inCall) seen();
+}
+function setAgent(a, text) {
+  agentOn = !!a; $('stage').classList.toggle('agent', agentOn);
+  if ($('devbtn')) { $('devbtn').classList.toggle('on', agentOn); $('devbtn').textContent = agentOn ? 'Disconnect device' : 'Connect Olingo device'; $('devsel').style.display = 'none'; }
+  if ($('devstat')) $('devstat').textContent = text || (agentOn ? (a.mic === 'mac' ? `camera and speaker: ${a.name} over ${a.over} · microphone: this Mac (this Bluetooth link carried ${a.mic_arrived} of 3 s of the device's microphone)` : `camera, microphone and speaker: ${a.name} over ${a.over}${a.simulated ? ' (simulated)' : ''}`) : 'camera, microphone and speaker: this Mac');
+  $('net').dataset.dev = agentOn ? `${a.name} over ${a.over}` : '';
+}
+if ($('devbtn')) $('devbtn').onclick = async () => {
+  if (agentOn) return send({ type: 'agent', action: 'disconnect' });
+  const r = await (await fetch('/api/agent/candidates')).json();
+  if (!r.candidates.length) { $('devstat').textContent = 'No device found. Pair it over Bluetooth (or plug it in), then try again.'; return; }
+  if (r.candidates.length === 1 || $('devsel').style.display !== 'none') {
+    const target = $('devsel').style.display !== 'none' ? $('devsel').value : r.candidates[0].target;
+    $('devstat').textContent = 'Connecting…'; send({ type: 'agent', action: 'connect', target });
+  } else {                                        // several possible devices: let the person pick, then press again
+    $('devsel').innerHTML = r.candidates.map(c => `<option value="${esc(c.target)}">${esc(c.label)}</option>`).join('');
+    $('devsel').style.display = 'inline-block'; $('devstat').textContent = 'Pick the device, then press Connect again.';
+  }
+};
+
+async function startCall() {
+  $('start').disabled = true; $('boot').textContent = agentOn ? 'Calling…' : 'Opening the camera…';
+  if (!agentOn) await openCamera();
+  const cv = $('cv'), cx = cv.getContext('2d');
+  clearInterval(sendTimer);
+  sendTimer = setInterval(() => {        // frames go to the backend on this Mac only; never mirrored, never stored
+    if (agentOn || !ws || ws.readyState !== 1 || $('cam').videoWidth === 0) return;
+    cx.drawImage($('cam'), 0, 0, 640, 360);
+    cv.toBlob(b => b && b.arrayBuffer().then(a => { ws.send(a); frames++; seen(); }), 'image/jpeg', 0.8);
+  }, 250);
+  pttMode = $('pttbox').checked; setPtt();
+  localStorage.setItem('olingo', JSON.stringify(choice));
+  send({ type: 'start', ptt: pttMode, focus: $('focusbox').checked, l1: choice.l1, l2: choice.l2, level: choice.level, voice: choice.voice });
+}
+$('start').onclick = () => startCall().catch(e => { $('boot').textContent = 'Camera: ' + e.message; $('start').disabled = false; });
+$('hang').onclick = () => { send({ type: 'hangup' }); $('hang').textContent = 'Ending…';
+  setTimeout(() => { if (inCall) location.reload(); }, 7000); };              // never stuck in a call
+function setPtt() { $('ptt').textContent = 'Hold Space to talk: ' + (pttMode ? 'on' : 'off'); $('ptt').classList.toggle('on', pttMode); }
+$('ptt').onclick = () => { pttMode = !pttMode; setPtt(); send({ type: 'ptt_mode', on: pttMode }); };
+addEventListener('keydown', e => {
+  if (e.code === 'KeyD' && !e.metaKey && !e.ctrlKey) { hud = !hud; $('hud').style.display = hud ? 'block' : 'none'; drawHud(); }
+  if (e.code === 'Space' && inCall && pttMode) { e.preventDefault(); if (!pttDown) { pttDown = true; $('ptt').classList.add('down'); send({ type: 'ptt', down: true }); } }
+});
+addEventListener('keyup', e => { if (e.code === 'Space' && pttDown) { pttDown = false; $('ptt').classList.remove('down'); send({ type: 'ptt', down: false }); } });
+
+/* ---------- rendering helpers ---------- */
+function seen() { $('seen').innerHTML = `<b>${frames.toLocaleString()}</b> frames seen · <b>${looks}</b> looks` + ($('seen').dataset.focus ? ' · <b>' + $('seen').dataset.focus + '</b>' : ''); }
+function segHtml(segs) {
+  return segs.map(s => {
+    if (!s.l2) return esc(s.t);
+    const r = s.r || [];
+    const body = r.some(x => x) ? [...s.t].map((c, i) => r[i] ? `<ruby>${esc(c)}<rt>${esc(r[i])}</rt></ruby>` : esc(c)).join('') : esc(s.t);
+    return `<span class="l2"${s.g ? ` title="${esc(s.g)}"` : ''}>${body}</span>`;
+  }).join('');
+}
+function drillHtml(word, rd, marks) {
+  const r = rd || [];
+  if (r.some(x => x)) return [...word].map((c, i) => `<ruby class="${marks ? cls((marks[i] || {p:0}).p) : ''}">${esc(c)}<rt>${esc(r[i] || '')}</rt></ruby>`).join('');
+  if (marks) return marks.map(m => `<span class="w ${cls(m.p)}">${esc(m.w)}</span>`).join('');
+  return `<span class="w">${esc(word)}</span>`;
+}
+function addTurn(tier, label, detail) {
+  const d = document.createElement('div'); d.className = 'turn';
+  d.innerHTML = `<span class="tier t${tier}">TIER ${tier}</span>${esc(label)}<div class="m">${esc(detail)}</div>`;
+  const l = $('tlist'); l.prepend(d); while (l.children.length > 40) l.lastChild.remove();
+}
+function hitTier(t) {
+  tiers[t]++; const e = $('tb' + t); e.querySelector('b').textContent = tiers[t]; e.classList.add('hit'); setTimeout(() => e.classList.remove('hit'), 1300);
+  const n = tiers[0] + tiers[1] + tiers[2]; $('nmp').textContent = n ? Math.round(100 * tiers[0] / n) + '% (' + tiers[0] + ' of ' + n + ')' : '–';
+}
+function showSaw() {
+  const c = $('sawcv'), v = agentOn ? $('agentcam') : $('cam'); if (agentOn ? v.naturalWidth : v.videoWidth) c.getContext('2d').drawImage(v, 0, 0, c.width, c.height);
+  $('saw').classList.add('on'); setTimeout(() => $('saw').classList.remove('on'), 2200);
+}
+function thinking(on) { $('dots').style.display = on ? 'flex' : 'none'; if (on) $('ostate').textContent = 'thinking'; }
+function overlay(html) { $('overlay').style.display = 'grid'; $('overlay').innerHTML = html; }
+function drawHud() {
+  if (!hud) return;
+  const m = lastTurn && lastTurn.marks || {};
+  $('hud').textContent = `LAST TURN (ms after you stopped talking)\n  transcript ready   ${m.transcript ?? '–'}   (Whisper ${m.asr ?? '–'})\n  first sentence     ${m.first_ready ?? '–'}\n  voice audible      ${m.audio ?? '–'}\n` +
+    (lastTurn ? `  Bonsai ${lastTurn.model}: ${lastTurn.llm_ms} ms, prefill ${lastTurn.prefill_ms} ms, ${lastTurn.prompt_n} new + ${lastTurn.cache_n} cached in, ${lastTurn.gen_n} out, ${lastTurn.tok_s} tok/s\n` : '') +
+    `SCENE  ${sceneInfo}\nMEMORY ${memInfo}\nNET    ${netInfo}`;
+}
+
+/* ---------- events from the backend ---------- */
+function handle(m) {
+  switch (m.t) {
+    case 'hello':
+      if (inCall || !$('start')) break;
+      if (m.speech_error) { $('boot').innerHTML = '<span style="color:var(--bad)">' + esc(m.speech_error) + '</span>'; break; }
+      $('start').disabled = !(m.speech_ready && m.bonsai_9b);
+      $('boot').textContent = !m.bonsai_9b ? 'Bonsai 9B is not running. Start it with scripts/run.sh' : m.speech_ready ? 'Ready.' : 'Loading the speech models…';
+
+      if (m.langs) { LANGS = m.langs; fillLangs(); }
+      if (m.agent) setAgent(m.agent);
+      if (m.voices && $('voicesel') && $('voicesel').options.length < 2) { m.voices.forEach(v => $('voicesel').add(new Option(v.label, v.id))); $('voicesel').value = choice.voice || ''; }
+      if ($('deckbtn')) { $('deckbtn').style.display = m.deck ? 'inline-block' : 'none'; $('deckbtn').textContent = `My flashcards (${m.deck})`; }
+      break;
+    case 'agent':
+      if (m.state === 'connected') setAgent(m);
+      else if (m.state === 'connecting') { if ($('devstat')) $('devstat').textContent = 'Connecting…'; }
+      else { setAgent(null, m.state === 'failed' ? 'Could not connect: ' + (m.message || '') : m.state === 'lost' ? 'The device went away. Back to this Mac.' : null);
+        if (m.state === 'lost' && inCall) addTurn(0, 'the Olingo device disconnected', 'camera, microphone and speaker are this Mac\'s again'); }
+      break;
+    case 'ring': if ($('ringfill')) { $('ringfill').style.width = m.pct + '%'; $('ringpct').textContent = m.pct + '%'; } break;
+    case 'preview': if ($('voicetest')) { const on = m.state === 'playing'; $('voicetest').classList.toggle('playing', on);
+        $('voicetest').textContent = on ? '♪ playing' : '▶ Hear it'; speaking = on ? 1 : 0; }
+      break;
+    case 'phase':
+      if (m.phase === 'calling') overlay('<div><div class="ringer"><svg width="60" height="60" viewBox="0 0 74 74"><circle cx="26" cy="31" r="4.6" fill="#06281c"/><circle cx="48" cy="31" r="4.6" fill="#06281c"/><ellipse cx="37" cy="50" rx="9" ry="3" fill="#06281c"/></svg></div><h1>Calling Olingo…</h1><div id="ringbar"><i id="ringfill"></i></div><div id="ringpct">0%</div></div>');
+      if (m.phase === 'floor') beginCall();
+      if (m.phase === 'ending') $('hang').textContent = 'Ending…';
+      break;
+    case 'blocked':
+      inCall = false; clearInterval(sendTimer);
+      overlay('<div id="blocked"><h1 style="font-size:24px"><b>The call could not start</b></h1><p style="color:var(--ink)">' + esc(m.message) + '</p><button onclick="location.reload()" style="background:var(--accent);color:var(--accent-ink)">Try again</button></div>');
+      break;
+    case 'warm': addTurn(0, 'while it rang: models warmed, first look at the room', `Bonsai 9B ${m.bonsai_9b_ms} ms${m.bonsai_4b_ms ? ' · 4B ' + m.bonsai_4b_ms + ' ms' : ''}${m.room_ms ? ' · first look ' + fmtMs(m.room_ms) : ''} · ${m.lines_made} voice lines made`);
+      break;
+    case 'profile': beginCall(); l2name = m.l2_name; $('profile').textContent = `${m.l1_name} → ${m.l2_name} · ${m.level_name}`; $('mixlang').textContent = m.l2_name;
+      if (m.room && m.room.length) $('room').innerHTML = 'First look, while it rang: <b>' + m.room.map(t => esc(t.l1)).join(', ') + '</b>';
+      break;
+    case 'focus': if (m.on && !$('seen').dataset.focus) $('seen').dataset.focus = 'nearest voice only'; seen(); break;
+    case 'voice': if (m.on) $('seen').dataset.focus = 'your voice only'; seen(); break;
+    case 'ignored': addTurn(0, 'ignored: ' + m.why, 'not heard, not answered · no model call'); break;
+    case 'repeat': addTurn(m.how === 'sketch' ? 0 : 2, 'a question it had already asked was left out', `“${m.q}”` + (m.earlier ? ` ≈ “${m.earlier}”` : '') + ` · found by ${m.how === 'sketch' ? 'the memory sketch, no model' : m.how + (m.ms ? ' in ' + fmtMs(m.ms) : '')}`); break;
+    case 'room': if (m.things && m.things.length) $('room').innerHTML = 'In view now: <b>' + m.things.map(esc).join(', ') + '</b>'; break;
+    case 'phrases': $('drill').style.display = 'flex'; $('drill').querySelector('.meta').innerHTML = m.phrases.map(p => `<span class="l2">${esc(p.l2)}</span> ${esc(p.l1)}`).join(' · '); break;
+    case 'level': $('profile').textContent = $('profile').textContent.replace(/· .*$/, '· ' + m.name); break;
+    case 'say':
+      speaking++; thinking(false); step('s-speak', true, m.how === 'cached' ? 'cached' : fmtMs(m.ttfa_ms)); $('ostate').textContent = 'speaking';
+      if (m.role === 'word') { $('drill').classList.remove('pulse'); void $('drill').offsetWidth; $('drill').classList.add('pulse'); }
+      else if (m.role === 'part') { /* the next run of a sentence that is already on screen */ }
+      else if (m.role === 'gloss') { $('o-gloss').textContent = m.text; }
+      else if (m.role === 'heard' || m.role === 'phrase') { $('o-text').innerHTML = segHtml(m.segs); $('o-gloss').textContent = m.gloss || (m.role === 'heard' ? 'what I heard' : ''); }
+      else { $('o-text').innerHTML = segHtml(m.segs); $('o-gloss').textContent = m.gloss || ''; if (m.role === 'reply') $('drill').style.display = 'none'; }
+      $('mixpct').textContent = m.pct + '%'; $('mixfill').style.transform = `scaleX(${Math.min(1, m.pct / 100)})`;
+      break;
+    case 'said': speaking = Math.max(0, speaking - 1); if (!speaking) { step('s-speak', false); $('ostate').textContent = 'Olingo'; } break;
+    case 'gloss': $('o-gloss').textContent = m.text; break;
+    case 'mic': {
+      const open = m.state === 'open' || m.state === 'hearing' || m.state === 'ptt';
+      step('s-hear', open || m.state === 'thinking'); $('stage').classList.toggle('hearing', m.state === 'hearing');
+      $('listen').style.display = open ? 'flex' : 'none';
+      $('listen-lab').textContent = m.state === 'hearing' ? 'I hear you…' : m.state === 'ptt' ? 'Hold Space and speak' : 'Listening… speak now';
+      if (m.state === 'open' || m.state === 'ptt') { $('y-text').textContent = ''; hist.fill(0); meter(0); speaking = 0; step('s-speak', false); $('ostate').textContent = 'your turn'; }
+      if (m.state === 'thinking') { thinking(true); }
+      break; }
+    case 'miclevel': meter(m.v); break;
+    case 'vu': vu = m.v; break;
+    case 'heard':
+      $('y-text').textContent = m.text;
+      step('s-hear', false, fmtMs(m.asr_ms)); break;
+    case 'route':
+      if (!m.again) hitTier(m.tier); thinking(m.tier > 0);
+      $('think-who').textContent = m.tier === 0 ? 'a rule, no model' : `Bonsai-2 ${m.model} · GPU` + (m.image ? ' · with the frame' : ' · text only');
+      $('s-see').querySelector('span').textContent = m.image ? `Bonsai-2 ${m.model} · GPU · looking at one frame` : 'Bonsai-2 9B · GPU · one small frame, only when needed';
+      step('s-think', m.tier > 0, m.tier === 0 ? '0 ms' : null);
+      if (m.image) { step('s-see', true); $('stage').classList.add('looking'); if (!m.again) { looks++; seen(); showSaw(); } }
+      if (m.tier === 0) addTurn(0, m.why, 'no model call');
+      break;
+    case 'turn':
+      lastTurn = m; drawHud();
+      step('s-think', false, fmtMs(m.llm_ms)); step('s-see', false, m.image ? fmtMs(m.prefill_ms) : 'skipped'); $('stage').classList.remove('looking'); thinking(false);
+      addTurn(m.tier, m.why + (m.silent ? ' (stayed quiet)' : ''), m.failed ? 'Bonsai did not answer' :
+        `${m.marks.audio != null ? 'voice ' + fmtMs(m.marks.audio) + ' after you stopped · ' : ''}${m.marks.asr ? 'WhisperKit ' + fmtMs(m.marks.asr) + ' → ' : ''}Bonsai-2 ${m.model}${m.image ? ' + frame' : ''} ${fmtMs(m.llm_ms)} · ${m.tok_s} tok/s · ${m.prompt_n} in / ${m.gen_n} out tok`);
+      break;
+    case 'card': $('drill').style.display = 'flex'; $('drill').dataset.word = m.l2; $('drill').dataset.rd = JSON.stringify(m.readings || []);
+      $('drill').querySelector('.zi').innerHTML = drillHtml(m.l2, m.readings); $('drill').querySelector('.meta').textContent = m.l1; break;
+    case 'score':
+      $('drill').querySelector('.zi').innerHTML = drillHtml($('drill').dataset.word || '', m.readings, m.target);
+      $('drill').querySelector('.meta').textContent = `clarity ${Math.round(m.score * 100)}%`;
+      $('y-text').textContent = m.heard; hitTier(0); addTurn(0, 'repeat scored by rule', `no model call · ${fmtMs(m.ms)} after you stopped`); break;
+    case 'words': {
+      const ws_ = Object.entries(m.words).reverse();
+      $('cards').innerHTML = ws_.map(([k, v]) => `<div class="card ${v.drilled ? '' : 'seen'}"><span class="zh ${v.drilled ? cls(v.score) : ''}">${esc(v.l2)}</span><span class="py">${esc(v.reading)}</span><span class="en">${esc(k)}</span></div>`).join('');
+      $('wcount').textContent = m.learned + ' learned'; break; }
+    case 'idle': thinking(false); break;
+    case 'scene': sceneInfo = `changed ${(m.chg * 100).toFixed(0)}% · moving ${(m.mot * 100).toFixed(1)}%${m.fired ? ' · NEW THING' + (m.took ? ' (speaking first)' : '') : ''}`; drawHud(); break;
+    case 'privacy': netInfo = `${m.external} external · checked ${m.checks}× · ${m.processes} processes`;
+      $('net').innerHTML = `offline · <b>${m.external}</b> external connections · verified <b>${m.checks}×</b>` + (m.device ? ` · device: <b>${esc(m.device.name)}</b> over ${esc(m.device.over)}` + (m.device.delay_ms != null ? `, link delay <b>${m.device.delay_ms} ms</b>` : '') : ''); drawHud(); break;
+    case 'memory': {
+      memInfo = `${m.wired_gb} of ${m.limit_gb} GB locked · pressure level ${m.level}`; drawHud();
+      const tight = m.ratio >= 0.9 || m.level >= 2, hog = (m.hogs || [])[0];
+      $('banner').style.display = tight ? 'block' : 'none';
+      if (tight) $('banner').textContent = `Memory is nearly full (${m.wired_gb} of ${m.limit_gb} GB). ` + (hog ? `Close ${hog.name} (${hog.gb} GB) to keep the call smooth.` : 'Close other apps to keep the call smooth.');
+      break; }
+    case 'models': { const e = Object.entries(m.mb || {}); if (e.length) $('inmem').innerHTML = 'In memory side by side, measured: ' + e.map(([k, v]) => `${esc(k)} <b>${(v / 1024).toFixed(1)} GB</b>`).join(' · '); break; }
+    case 'error': thinking(false); addTurn(0, 'problem', m.message); break;
+    case 'receipt': showReceipt(m); break;
+  }
+}
+
+function beginCall() {
+  if (inCall) return;
+  inCall = true; $('overlay').style.display = 'none'; $('controls').style.display = 'flex'; $('hang').textContent = 'Hang up'; t0 = Date.now();
+  clearInterval(clockTimer);
+  clockTimer = setInterval(() => { const s = Math.floor((Date.now() - t0) / 1000); $('clock').textContent = String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0'); }, 500);
+}
+
+function showReceipt(r) {
+  inCall = false; clearInterval(sendTimer); clearInterval(clockTimer); thinking(false);
+  if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
+  $('controls').style.display = 'none'; $('stage').classList.remove('hearing', 'looking');
+  const learned = r.words.filter(w => w.drilled);
+  overlay(`<div id="receipt"><h2>${esc(r.date || '')} · ${Math.floor(r.call_s / 60)} min ${r.call_s % 60} s · your ${esc(r.l2_name)} words</h2>
+    <div class="flash">${r.words.map(fcHtml).join('') || '<span style="color:var(--dim)">No words this time.</span>'}</div>
+    <div style="color:var(--dim);font-size:12.5px;margin:2px 0 14px">Click a card to turn it. ${r.deck_total} word${r.deck_total === 1 ? '' : 's'} in your deck.</div>
+    <h2>Receipt</h2><table>
+    <tr><td>Seen</td><td><b>${r.frames_seen.toLocaleString()}</b> frames of you → kept <b>0</b></td></tr>
+    <tr><td>Looked</td><td><b>${r.looks}</b> times, one small frame each${r.spoke_first ? ` (${r.spoke_first} on its own)` : ''}</td></tr>
+    <tr><td>Heard</td><td><b>${r.heard_s}</b> s of your voice → kept <b>0</b>${r.ignored ? ` · ignored ${r.ignored} sounds that were not you` : ''}</td></tr>
+    ${r.voice_focus ? `<tr><td>Your voice</td><td>recognised from <b>${r.voice_learned_s}</b> s of your first answers, to ignore other people · held in memory only · <b>erased</b> when you hung up</td></tr>` : ''}
+    <tr><td>Sent off</td><td><b>0</b> bytes · <b>${r.external}</b> external connections (verified ${r.checks}× across ${r.processes} processes)</td></tr>
+    ${r.models && Object.keys(r.models).length ? `<tr><td>Ran on</td><td>${Object.entries(r.models).map(([k, v]) => `${esc(k)} <b>${(v / 1024).toFixed(1)} GB</b>`).join(' · ')} in memory side by side · Bonsai on the GPU, Argmax WhisperKit and TTSKit on the Neural Engine</td></tr>` : ''}
+    ${r.agent ? `<tr><td>Device</td><td><b>${esc(r.agent.name)}</b> over ${esc(r.agent.over)}: ${r.agent.frames.toLocaleString()} pictures and ${r.agent.mic_s} s of sound came in, ${r.agent.spk_s} s of speech went out · passed through memory only, kept <b>0</b></td></tr>` : ''}
+    <tr><td>Models</td><td><b>${r.model_calls}</b> Bonsai calls for <b>${r.responses}</b> responses · <b>${r.no_model_pct}%</b> needed no model<br>tier 0 / 1 / 2 = ${r.tiers.join(' / ')} · ${r.prompt_tokens.toLocaleString()} in, ${r.gen_tokens.toLocaleString()} out tokens</td></tr>
+    <tr><td>Speech</td><td>${r.cache_hits} lines from cache, ${r.live_tts} synthesised</td></tr>
+    <tr><td>Kept</td><td><b>${learned.length}</b> ${esc(r.l2_name)} word${learned.length === 1 ? '' : 's'}, as text</td></tr></table>
+    <div class="tag">It remembers your words, not your face.</div>
+    <div style="margin-top:16px"><button onclick="location.reload()" style="background:var(--accent);color:var(--accent-ink)">New call</button></div></div>`);
+}
+
+/* avatar: mouth and ring follow the real speech level from the bridge (transform and opacity only) */
+(function tick() {
+  const v = speaking ? Math.max(0.12, vu) : 0; vu *= 0.82;
+  $('mouth').setAttribute('ry', (1.8 + v * 8).toFixed(1));
+  $('ring').style.opacity = v ? (0.25 + v * 0.6).toFixed(2) : 0; $('ring').style.transform = `scale(${(1 + v * 0.14).toFixed(3)})`;
+  requestAnimationFrame(tick);
+})();
+
+/* ?demo : plays a canned sequence of the same events, to check the layout without camera or models */
+if (DEMO) {
+  const zi = (t, r, g) => ({ t, l2: true, r, g });
+  const seq = [
+    [0, { t: 'hello', speech_ready: true, bonsai_9b: true, bonsai_4b: true }], [200, { t: 'phase', phase: 'setup' }],
+    [300, { t: 'profile', l1_name: 'English', l2_name: 'Chinese', level_name: 'intermediate', room: [{ l1: 'apple' }, { l1: 'lamp' }, { l1: 'hoodie' }] }],
+    [400, { t: 'privacy', external: 0, checks: 12, processes: 4 }], [450, { t: 'heard', text: 'What am I holding?', asr_ms: 240 }],
+    [500, { t: 'route', tier: 2, why: 'about what it sees', model: '9B', image: true }],
+    [900, { t: 'say', role: 'reply', lang: 'en', how: 'live', ttfa_ms: 350, pct: 0, segs: [{ t: 'That is a red apple.' }] }],
+    [1000, { t: 'turn', tier: 2, why: 'about what it sees', model: '9B', image: true, llm_ms: 1290, prefill_ms: 760, prompt_n: 163, cache_n: 240, gen_n: 31, tok_s: 54.2, marks: { asr: 240, transcript: 250, first_ready: 1180, audio: 1560 } }],
+    [1100, { t: 'card', l1: 'apple', l2: '苹果', reading: 'píng guǒ', readings: ['píng', 'guǒ'] }], [1150, { t: 'said' }],
+    [1200, { t: 'score', target: [{ w: '苹', p: 0.9 }, { w: '果', p: 0.58 }], score: 0.74, heard: '苹果', readings: ['píng', 'guǒ'], ms: 310 }],
+    [1300, { t: 'words', learned: 2, words: { cup: { l2: '杯子', reading: 'bēi zi', score: 0.9, drilled: true }, noodles: { l2: '面条', reading: 'miàn tiáo', score: 0, drilled: false }, apple: { l2: '苹果', reading: 'píng guǒ', score: 0.74, drilled: true } } }],
+    [1400, { t: 'route', tier: 1, why: 'small talk, no image needed', model: '4B', image: false }],
+    [1500, { t: 'say', role: 'reply', lang: 'en', how: 'live', ttfa_ms: 340, pct: 24, segs: [{ t: 'Do you keep your ' }, zi('苹果', ['píng', 'guǒ'], 'apple'), { t: ' next to your ' }, zi('杯子', ['bēi', 'zi'], 'cup'), { t: '?' }] }],
+    [1600, { t: 'turn', tier: 1, why: 'small talk, no image needed', model: '4B', image: false, llm_ms: 430, prefill_ms: 60, prompt_n: 44, cache_n: 250, gen_n: 30, tok_s: 83, marks: { asr: 210, transcript: 220, first_ready: 420, audio: 790 } }],
+    [1700, { t: 'route', tier: 0, why: 'command: say it again', model: 'none', image: false }],
+    [1800, { t: 'mic', state: 'hearing' }], [1850, { t: 'vu', v: 0.6 }],
+    [1900, { t: 'memory', wired_gb: 10.4, limit_gb: 19.6, ratio: 0.53, level: 1, hogs: [] }],
+  ];
+  $('overlay').style.display = 'none'; frames = 1284; looks = 1;
+  seq.forEach(([d, m]) => setTimeout(() => handle(m), d));
+  setInterval(() => meter(Math.random() * 0.8), 60);
+  if (new URLSearchParams(location.search).get('demo') === 'receipt') setTimeout(() => handle({ t: 'receipt', frames_seen: 1284, looks: 6, heard_s: 41.2, external: 0, checks: 37, processes: 4, model_calls: 9, responses: 21, no_model_pct: 57, tiers: [12, 3, 6], prompt_tokens: 1870, gen_tokens: 410, cache_hits: 31, live_tts: 14, spoke_first: 1, l2_name: 'Chinese', call_s: 172, date: 'November 15, 2026', deck_total: 7, ignored: 2, words: [{ l1: 'cup', l2: '杯子', reading: 'bēi zi', score: 0.9, drilled: true, example: 'That is a blue cup.', phrases: [{ l2: '我的杯子', l1: 'my cup' }, { l2: '一杯水', l1: 'a cup of water' }] }, { l1: 'apple', l2: '苹果', reading: 'píng guǒ', score: 0.74, drilled: true, example: 'That is a red apple.', phrases: [{ l2: '吃苹果', l1: 'eat an apple' }] }, { l1: 'keys', l2: '钥匙', reading: 'yào shi', score: 0.55, drilled: true, phrases: [] }, { l1: 'noodles', l2: '面条', reading: 'miàn tiáo', score: 0, drilled: false, phrases: [] }] }), 2100);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,1580 @@
+[
+ {
+  "when": "2026-11-14 21:07",
+  "swap": "total = 5120.00M  used = 4013.25M  free = 1106.75M  (encrypted)",
+  "see": {
+   "256": [
+    {
+     "label": "glasses",
+     "see": {
+      "en": "glasses",
+      "es": "gafas",
+      "g": "f",
+      "n": 1,
+      "color": "black"
+     },
+     "ok": true,
+     "ms": 4337,
+     "prompt_ms": 1800,
+     "prompt_n": 78,
+     "predicted_ms": 2493,
+     "predicted_n": 29
+    },
+    {
+     "label": "iphone",
+     "see": {
+      "en": "phone",
+      "es": "teléfono",
+      "g": "m",
+      "n": 1,
+      "color": "white"
+     },
+     "ok": true,
+     "ms": 3837,
+     "prompt_ms": 1452,
+     "prompt_n": 78,
+     "predicted_ms": 2228,
+     "predicted_n": 27
+    },
+    {
+     "label": "mouse",
+     "see": {
+      "en": "mouse",
+      "es": "ratón",
+      "g": "m",
+      "n": 1,
+      "color": "black"
+     },
+     "ok": true,
+     "ms": 3991,
+     "prompt_ms": 1609,
+     "prompt_n": 78,
+     "predicted_ms": 2349,
+     "predicted_n": 28
+    },
+    {
+     "label": "orange",
+     "see": {
+      "en": "orange",
+      "es": "naranja",
+      "g": "f",
+      "n": 1,
+      "color": "orange"
+     },
+     "ok": true,
+     "ms": 3717,
+     "prompt_ms": 1442,
+     "prompt_n": 78,
+     "predicted_ms": 2119,
+     "predicted_n": 27
+    },
+    {
+     "label": "water bottle",
+     "see": {
+      "en": "bottle",
+      "es": "botella",
+      "g": "f",
+      "n": 1,
+      "color": "brown"
+     },
+     "ok": false,
+     "ms": 3681,
+     "prompt_ms": 1428,
+     "prompt_n": 78,
+     "predicted_ms": 2226,
+     "predicted_n": 28
+    },
+    {
+     "label": "glasses",
+     "see": {
+      "en": "glasses",
+      "es": "gafas",
+      "g": "f",
+      "n": 1,
+      "color": "black"
+     },
+     "ok": true,
+     "ms": 4160,
+     "prompt_ms": 1461,
+     "prompt_n": 78,
+     "predicted_ms": 2572,
+     "predicted_n": 31
+    },
+    {
+     "label": "iphone",
+     "see": {
+      "en": "phone",
+      "es": "telefono",
+      "g": "m",
+      "n": 1,
+      "color": "white"
+     },
+     "ok": true,
+     "ms": 3517,
+     "prompt_ms": 1407,
+     "prompt_n": 78,
+     "predicted_ms": 1973,
+     "predicted_n": 25
+    },
+    {
+     "label": "mouse",
+     "see": {
+      "en": "mouse",
+      "es": "ratón",
+      "g": "m",
+      "n": 1,
+      "color": "black"
+     },
+     "ok": true,
+     "ms": 3555,
+     "prompt_ms": 1484,
+     "prompt_n": 78,
+     "predicted_ms": 2035,
+     "predicted_n": 26
+    },
+    {
+     "label": "orange",
+     "see": {
+      "en": "orange",
+      "es": "naranja",
+      "g": "f",
+      "n": 1,
+      "color": "orange"
+     },
+     "ok": true,
+     "ms": 3665,
+     "prompt_ms": 1437,
+     "prompt_n": 78,
+     "predicted_ms": 2189,
+     "predicted_n": 27
+    },
+    {
+     "label": "water bottle",
+     "see": {
+      "en": "bottle",
+      "es": "botella",
+      "g": "f",
+      "n": 1,
+      "color": "brown"
+     },
+     "ok": false,
+     "ms": 4048,
+     "prompt_ms": 1428,
+     "prompt_n": 78,
+     "predicted_ms": 2509,
+     "predicted_n": 30
+    },
+    {
+     "label": "glasses",
+     "see": {
+      "en": "glasses",
+      "es": "gafas",
+      "g": "f",
+      "n": 1,
+      "color": "black"
+     },
+     "ok": true,
+     "ms": 3891,
+     "prompt_ms": 1429,
+     "prompt_n": 78,
+     "predicted_ms": 2388,
+     "predicted_n": 30
+    },
+    {
+     "label": "iphone",
+     "see": {
+      "en": "phone",
+      "es": "teléfono",
+      "g": "m",
+      "n": 1,
+      "color": "white"
+     },
+     "ok": true,
+     "ms": 3682,
+     "prompt_ms": 1457,
+     "prompt_n": 78,
+     "predicted_ms": 2191,
+     "predicted_n": 27
+    },
+    {
+     "label": "mouse",
+     "see": {
+      "en": "mouse",
+      "es": "ratón",
+      "g": "m",
+      "n": 1,
+      "color": "black"
+     },
+     "ok": true,
+     "ms": 4116,
+     "prompt_ms": 1474,
+     "prompt_n": 78,
+     "predicted_ms": 2590,
+     "predicted_n": 27
+    },
+    {
+     "label": "orange",
+     "see": {
+      "en": "orange",
+      "es": "naranja",
+      "g": "f",
+      "n": 1,
+      "color": "orange"
+     },
+     "ok": true,
+     "ms": 3928,
+     "prompt_ms": 1430,
+     "prompt_n": 78,
+     "predicted_ms": 2322,
+     "predicted_n": 28
+    },
+    {
+     "label": "water bottle",
+     "see": {
+      "en": "bottle",
+      "es": "botella",
+      "g": "f",
+      "n": 1,
+      "color": "brown"
+     },
+     "ok": false,
+     "ms": 3932,
+     "prompt_ms": 1458,
+     "prompt_n": 78,
+     "predicted_ms": 2448,
+     "predicted_n": 30
+    }
+   ],
+   "320": [
+    {
+     "label": "glasses",
+     "see": {
+      "en": "glasses",
+      "es": "gafas",
+      "g": "f",
+      "n": 1,
+      "color": "black"
+     },
+     "ok": true,
+     "ms": 4537,
+     "prompt_ms": 2140,
+     "prompt_n": 114,
+     "predicted_ms": 2331,
+     "predicted_n": 29
+    },
+    {
+     "label": "iphone",
+     "see": {
+      "en": "phone",
+      "es": "teléfono",
+      "g": "m",
+      "n": 1,
+      "color": "white"
+     },
+     "ok": true,
+     "ms": 4309,
+     "prompt_ms": 2091,
+     "prompt_n": 114,
+     "predicted_ms": 2169,
+     "predicted_n": 27
+    },
+    {
+     "label": "mouse",
+     "see": {
+      "en": "mouse",
+      "es": "ratón",
+      "g": "m",
+      "n": 1,
+      "color": "black"
+     },
+     "ok": true,
+     "ms": 4385,
+     "prompt_ms": 2139,
+     "prompt_n": 114,
+     "predicted_ms": 2203,
+     "predicted_n": 27
+    },
+    {
+     "label": "orange",
+     "see": {
+      "en": "orange",
+      "es": "naranja",
+      "g": "f",
+      "n": 1,
+      "color": "orange"
+     },
+     "ok": true,
+     "ms": 4434,
+     "prompt_ms": 2184,
+     "prompt_n": 114,
+     "predicted_ms": 2144,
+     "predicted_n": 27
+    },
+    {
+     "label": "water bottle",
+     "see": {
+      "en": "bottle",
+      "es": "botella",
+      "g": "f",
+      "n": 1,
+      "color": "brown"
+     },
+     "ok": false,
+     "ms": 4423,
+     "prompt_ms": 2095,
+     "prompt_n": 114,
+     "predicted_ms": 2262,
+     "predicted_n": 28
+    },
+    {
+     "label": "glasses",
+     "see": {
+      "en": "glasses",
+      "es": "gafas",
+      "g": "f",
+      "n": 1,
+      "color": "black"
+     },
+     "ok": true,
+     "ms": 4511,
+     "prompt_ms": 2108,
+     "prompt_n": 114,
+     "predicted_ms": 2333,
+     "predicted_n": 28
+    },
+    {
+     "label": "iphone",
+     "see": {
+      "en": "phone",
+      "es": "telefono",
+      "g": "m",
+      "n": 1,
+      "color": "white"
+     },
+     "ok": true,
+     "ms": 4345,
+     "prompt_ms": 2119,
+     "prompt_n": 114,
+     "predicted_ms": 2173,
+     "predicted_n": 26
+    },
+    {
+     "label": "mouse",
+     "see": {
+      "en": "mouse",
+      "es": "ratón",
+      "g": "m",
+      "n": 1,
+      "color": "black"
+     },
+     "ok": true,
+     "ms": 4354,
+     "prompt_ms": 2136,
+     "prompt_n": 114,
+     "predicted_ms": 2141,
+     "predicted_n": 26
+    },
+    {
+     "label": "orange",
+     "see": {
+      "en": "orange",
+      "es": "naranja",
+      "g": "f",
+      "n": 1,
+      "color": "orange"
+     },
+     "ok": true,
+     "ms": 4529,
+     "prompt_ms": 2263,
+     "prompt_n": 114,
+     "predicted_ms": 2203,
+     "predicted_n": 27
+    },
+    {
+     "label": "water bottle",
+     "see": {
+      "en": "bottle",
+      "es": "botella",
+      "g": "f",
+      "n": 1,
+      "color": "brown"
+     },
+     "ok": false,
+     "ms": 4477,
+     "prompt_ms": 2134,
+     "prompt_n": 114,
+     "predicted_ms": 2220,
+     "predicted_n": 28
+    },
+    {
+     "label": "glasses",
+     "see": {
+      "en": "glasses",
+      "es": "gafas",
+      "g": "f",
+      "n": 1,
+      "color": "black"
+     },
+     "ok": true,
+     "ms": 4432,
+     "prompt_ms": 2124,
+     "prompt_n": 114,
+     "predicted_ms": 2268,
+     "predicted_n": 28
+    },
+    {
+     "label": "iphone",
+     "see": {
+      "en": "phone",
+      "es": "telefono",
+      "g": "m",
+      "n": 1,
+      "color": "white"
+     },
+     "ok": true,
+     "ms": 4323,
+     "prompt_ms": 2156,
+     "prompt_n": 114,
+     "predicted_ms": 2116,
+     "predicted_n": 26
+    },
+    {
+     "label": "mouse",
+     "see": {
+      "en": "mouse",
+      "es": "ratón",
+      "g": "m",
+      "n": 1,
+      "color": "black"
+     },
+     "ok": true,
+     "ms": 4400,
+     "prompt_ms": 2111,
+     "prompt_n": 114,
+     "predicted_ms": 2213,
+     "predicted_n": 27
+    },
+    {
+     "label": "orange",
+     "see": {
+      "en": "orange",
+      "es": "naranja",
+      "g": "f",
+      "n": 1,
+      "color": "orange"
+     },
+     "ok": true,
+     "ms": 4359,
+     "prompt_ms": 2130,
+     "prompt_n": 114,
+     "predicted_ms": 2159,
+     "predicted_n": 27
+    },
+    {
+     "label": "water bottle",
+     "see": {
+      "en": "bottle",
+      "es": "botella",
+      "g": "f",
+      "n": 1,
+      "color": "brown"
+     },
+     "ok": false,
+     "ms": 4482,
+     "prompt_ms": 2198,
+     "prompt_n": 114,
+     "predicted_ms": 2246,
+     "predicted_n": 28
+    }
+   ],
+   "384": [
+    {
+     "label": "glasses",
+     "see": {
+      "en": "glasses",
+      "es": "gafas",
+      "g": "f",
+      "n": 1,
+      "color": "black"
+     },
+     "ok": true,
+     "ms": 5175,
+     "prompt_ms": 2586,
+     "prompt_n": 158,
+     "predicted_ms": 2523,
+     "predicted_n": 30
+    },
+    {
+     "label": "iphone",
+     "see": {
+      "en": "phone",
+      "es": "teléfono",
+      "g": "m",
+      "n": 1,
+      "color": "white"
+     },
+     "ok": true,
+     "ms": 4876,
+     "prompt_ms": 2585,
+     "prompt_n": 158,
+     "predicted_ms": 2181,
+     "predicted_n": 27
+    },
+    {
+     "label": "mouse",
+     "see": {
+      "en": "mouse",
+      "es": "ratón",
+      "g": "m",
+      "n": 1,
+      "color": "black"
+     },
+     "ok": true,
+     "ms": 5024,
+     "prompt_ms": 2561,
+     "prompt_n": 158,
+     "predicted_ms": 2408,
+     "predicted_n": 26
+    },
+    {
+     "label": "orange",
+     "see": {
+      "en": "orange",
+      "es": "naranja",
+      "g": "f",
+      "n": 1,
+      "color": "orange"
+     },
+     "ok": true,
+     "ms": 4897,
+     "prompt_ms": 2604,
+     "prompt_n": 158,
+     "predicted_ms": 2165,
+     "predicted_n": 27
+    },
+    {
+     "label": "water bottle",
+     "see": {
+      "en": "bottle",
+      "es": "botella",
+      "g": "f",
+      "n": 1,
+      "color": "brown"
+     },
+     "ok": false,
+     "ms": 5025,
+     "prompt_ms": 2546,
+     "prompt_n": 158,
+     "predicted_ms": 2441,
+     "predicted_n": 28
+    },
+    {
+     "label": "glasses",
+     "see": {
+      "en": "glasses",
+      "es": "gafas",
+      "g": "f",
+      "n": 1,
+      "color": "black"
+     },
+     "ok": true,
+     "ms": 5079,
+     "prompt_ms": 2596,
+     "prompt_n": 158,
+     "predicted_ms": 2343,
+     "predicted_n": 29
+    },
+    {
+     "label": "iphone",
+     "see": {
+      "en": "phone",
+      "es": "teléfono",
+      "g": "m",
+      "n": 1,
+      "color": "white"
+     },
+     "ok": true,
+     "ms": 4797,
+     "prompt_ms": 2549,
+     "prompt_n": 158,
+     "predicted_ms": 2165,
+     "predicted_n": 27
+    },
+    {
+     "label": "mouse",
+     "see": {
+      "en": "mouse",
+      "es": "ratón",
+      "g": "m",
+      "n": 1,
+      "color": "black"
+     },
+     "ok": true,
+     "ms": 4983,
+     "prompt_ms": 2541,
+     "prompt_n": 158,
+     "predicted_ms": 2221,
+     "predicted_n": 27
+    },
+    {
+     "label": "orange",
+     "see": {
+      "en": "orange",
+      "es": "naranja",
+      "g": "f",
+      "n": 1,
+      "color": "orange"
+     },
+     "ok": true,
+     "ms": 4747,
+     "prompt_ms": 2569,
+     "prompt_n": 158,
+     "predicted_ms": 2144,
+     "predicted_n": 27
+    },
+    {
+     "label": "water bottle",
+     "see": {
+      "en": "bottle",
+      "es": "botella",
+      "g": "f",
+      "n": 1,
+      "color": "brown"
+     },
+     "ok": false,
+     "ms": 4877,
+     "prompt_ms": 2586,
+     "prompt_n": 158,
+     "predicted_ms": 2239,
+     "predicted_n": 28
+    },
+    {
+     "label": "glasses",
+     "see": {
+      "en": "glasses",
+      "es": "gafas",
+      "g": "f",
+      "n": 1,
+      "color": "black"
+     },
+     "ok": true,
+     "ms": 4888,
+     "prompt_ms": 2533,
+     "prompt_n": 158,
+     "predicted_ms": 2256,
+     "predicted_n": 28
+    },
+    {
+     "label": "iphone",
+     "see": {
+      "en": "phone",
+      "es": "teléfono",
+      "g": "m",
+      "n": 1,
+      "color": "white"
+     },
+     "ok": true,
+     "ms": 4832,
+     "prompt_ms": 2599,
+     "prompt_n": 158,
+     "predicted_ms": 2188,
+     "predicted_n": 27
+    },
+    {
+     "label": "mouse",
+     "see": {
+      "en": "mouse",
+      "es": "mouse",
+      "g": "f",
+      "n": 1,
+      "color": "black"
+     },
+     "ok": true,
+     "ms": 4730,
+     "prompt_ms": 2566,
+     "prompt_n": 158,
+     "predicted_ms": 2121,
+     "predicted_n": 26
+    },
+    {
+     "label": "orange",
+     "see": {
+      "en": "orange",
+      "es": "naranja",
+      "g": "f",
+      "n": 1,
+      "color": "orange"
+     },
+     "ok": true,
+     "ms": 4857,
+     "prompt_ms": 2619,
+     "prompt_n": 158,
+     "predicted_ms": 2159,
+     "predicted_n": 27
+    },
+    {
+     "label": "water bottle",
+     "see": {
+      "en": "bottle",
+      "es": "botella",
+      "g": "f",
+      "n": 1,
+      "color": "brown"
+     },
+     "ok": false,
+     "ms": 4892,
+     "prompt_ms": 2567,
+     "prompt_n": 158,
+     "predicted_ms": 2222,
+     "predicted_n": 28
+    }
+   ],
+   "448": [
+    {
+     "label": "glasses",
+     "see": {
+      "en": "glasses",
+      "es": "gafas",
+      "g": "f",
+      "n": 1,
+      "color": "black"
+     },
+     "ok": true,
+     "ms": 5832,
+     "prompt_ms": 3462,
+     "prompt_n": 210,
+     "predicted_ms": 2257,
+     "predicted_n": 28
+    },
+    {
+     "label": "iphone",
+     "see": {
+      "en": "phone",
+      "es": "teléfono",
+      "g": "m",
+      "n": 1,
+      "color": "white"
+     },
+     "ok": true,
+     "ms": 5702,
+     "prompt_ms": 3457,
+     "prompt_n": 210,
+     "predicted_ms": 2196,
+     "predicted_n": 27
+    },
+    {
+     "label": "mouse",
+     "see": {
+      "en": "mouse",
+      "es": "ratón",
+      "g": "m",
+      "n": 1,
+      "color": "black"
+     },
+     "ok": true,
+     "ms": 5790,
+     "prompt_ms": 3377,
+     "prompt_n": 210,
+     "predicted_ms": 2259,
+     "predicted_n": 27
+    },
+    {
+     "label": "orange",
+     "see": {
+      "en": "orange",
+      "es": "naranja",
+      "g": "f",
+      "n": 1,
+      "color": "orange"
+     },
+     "ok": true,
+     "ms": 5606,
+     "prompt_ms": 3394,
+     "prompt_n": 210,
+     "predicted_ms": 2109,
+     "predicted_n": 26
+    },
+    {
+     "label": "water bottle",
+     "see": {
+      "en": "bottle",
+      "es": "botella",
+      "g": "f",
+      "n": 1,
+      "color": "brown"
+     },
+     "ok": false,
+     "ms": 5971,
+     "prompt_ms": 3424,
+     "prompt_n": 210,
+     "predicted_ms": 2414,
+     "predicted_n": 30
+    },
+    {
+     "label": "glasses",
+     "see": {
+      "en": "glasses",
+      "es": "gafas",
+      "g": "f",
+      "n": 1,
+      "color": "black"
+     },
+     "ok": true,
+     "ms": 5754,
+     "prompt_ms": 3471,
+     "prompt_n": 210,
+     "predicted_ms": 2237,
+     "predicted_n": 28
+    },
+    {
+     "label": "iphone",
+     "see": {
+      "en": "phone",
+      "es": "teléfono",
+      "g": "m",
+      "n": 1,
+      "color": "white"
+     },
+     "ok": true,
+     "ms": 6030,
+     "prompt_ms": 3475,
+     "prompt_n": 210,
+     "predicted_ms": 2472,
+     "predicted_n": 27
+    },
+    {
+     "label": "mouse",
+     "see": {
+      "en": "mouse",
+      "es": "ratón",
+      "g": "m",
+      "n": 1,
+      "color": "black"
+     },
+     "ok": true,
+     "ms": 7286,
+     "prompt_ms": 4581,
+     "prompt_n": 210,
+     "predicted_ms": 2547,
+     "predicted_n": 27
+    },
+    {
+     "label": "orange",
+     "see": {
+      "en": "orange",
+      "es": "naranja",
+      "g": "f",
+      "n": 1,
+      "color": "orange"
+     },
+     "ok": true,
+     "ms": 7290,
+     "prompt_ms": 4543,
+     "prompt_n": 210,
+     "predicted_ms": 2561,
+     "predicted_n": 27
+    },
+    {
+     "label": "water bottle",
+     "see": {
+      "en": "bottle",
+      "es": "botella",
+      "g": "f",
+      "n": 1,
+      "color": "brown"
+     },
+     "ok": false,
+     "ms": 6642,
+     "prompt_ms": 3769,
+     "prompt_n": 210,
+     "predicted_ms": 2702,
+     "predicted_n": 30
+    },
+    {
+     "label": "glasses",
+     "see": {
+      "en": "glasses",
+      "es": "gafas",
+      "g": "f",
+      "n": 1,
+      "color": "black"
+     },
+     "ok": true,
+     "ms": 6766,
+     "prompt_ms": 3878,
+     "prompt_n": 210,
+     "predicted_ms": 2717,
+     "predicted_n": 31
+    },
+    {
+     "label": "iphone",
+     "see": {
+      "en": "phone",
+      "es": "teléfono",
+      "g": "m",
+      "n": 1,
+      "color": "white"
+     },
+     "ok": true,
+     "ms": 6261,
+     "prompt_ms": 3704,
+     "prompt_n": 210,
+     "predicted_ms": 2367,
+     "predicted_n": 27
+    },
+    {
+     "label": "mouse",
+     "see": {
+      "en": "mouse",
+      "es": "ratón",
+      "g": "m",
+      "n": 1,
+      "color": "black"
+     },
+     "ok": true,
+     "ms": 5807,
+     "prompt_ms": 3491,
+     "prompt_n": 210,
+     "predicted_ms": 2144,
+     "predicted_n": 26
+    },
+    {
+     "label": "orange",
+     "see": {
+      "en": "orange",
+      "es": "naranja",
+      "g": "f",
+      "n": 1,
+      "color": "orange"
+     },
+     "ok": true,
+     "ms": 5968,
+     "prompt_ms": 3451,
+     "prompt_n": 210,
+     "predicted_ms": 2415,
+     "predicted_n": 28
+    },
+    {
+     "label": "water bottle",
+     "see": {
+      "en": "bottle",
+      "es": "botella",
+      "g": "f",
+      "n": 1,
+      "color": "brown"
+     },
+     "ok": false,
+     "ms": 6023,
+     "prompt_ms": 3487,
+     "prompt_n": 210,
+     "predicted_ms": 2467,
+     "predicted_n": 30
+    }
+   ]
+  }
+ },
+ {
+  "when": "2026-11-14 21:19",
+  "swap": "total = 5120.00M  used = 4099.12M  free = 1020.88M  (encrypted)",
+  "teach": {
+   "2B": [
+    {
+     "ms": 1735,
+     "tok_s": 23.6,
+     "predicted_n": 40,
+     "prompt_ms": 75
+    },
+    {
+     "ms": 2012,
+     "tok_s": 23.2,
+     "predicted_n": 42,
+     "prompt_ms": 242
+    },
+    {
+     "ms": 2133,
+     "tok_s": 23.7,
+     "predicted_n": 46,
+     "prompt_ms": 235
+    },
+    {
+     "ms": 2272,
+     "tok_s": 22.6,
+     "predicted_n": 47,
+     "prompt_ms": 236
+    },
+    {
+     "ms": 1955,
+     "tok_s": 23.1,
+     "predicted_n": 40,
+     "prompt_ms": 264
+    }
+   ],
+   "4B": [
+    {
+     "ms": 3460,
+     "tok_s": 12.3,
+     "predicted_n": 41,
+     "prompt_ms": 191
+    },
+    {
+     "ms": 3642,
+     "tok_s": 12.7,
+     "predicted_n": 41,
+     "prompt_ms": 473
+    },
+    {
+     "ms": 4202,
+     "tok_s": 12.4,
+     "predicted_n": 47,
+     "prompt_ms": 499
+    },
+    {
+     "ms": 3921,
+     "tok_s": 12.4,
+     "predicted_n": 43,
+     "prompt_ms": 523
+    },
+    {
+     "ms": 3703,
+     "tok_s": 11.9,
+     "predicted_n": 39,
+     "prompt_ms": 497
+    }
+   ]
+  },
+  "cache": {
+   "--ctx-checkpoints 0": [
+    {
+     "ms": 2275,
+     "prompt_n": 143,
+     "cache_n": 0,
+     "prompt_ms": 856,
+     "predicted_n": 32,
+     "predicted_ms": 1408,
+     "tok_s": 22.0,
+     "raw": "{\"en\":\"glasses\",\"es\":\"lentes\",\"g\":\"f\",\"n\":1,\"color\":\"black\"}",
+     "mode": "grammar"
+    },
+    {
+     "ms": 2344,
+     "prompt_n": 143,
+     "cache_n": 0,
+     "prompt_ms": 915,
+     "predicted_n": 29,
+     "predicted_ms": 1421,
+     "tok_s": 19.7,
+     "raw": "{\"en\":\"phone\",\"es\":\"teléfono\",\"g\":\"m\",\"n\":1,\"color\":\"white\"}",
+     "mode": "grammar"
+    },
+    {
+     "ms": 2181,
+     "prompt_n": 143,
+     "cache_n": 0,
+     "prompt_ms": 899,
+     "predicted_n": 29,
+     "predicted_ms": 1270,
+     "tok_s": 22.0,
+     "raw": "{\"en\":\"glasses\",\"es\":\"lentes\",\"g\":\"f\",\"n\":1,\"color\":\"black\"}",
+     "mode": "grammar"
+    },
+    {
+     "ms": 2122,
+     "prompt_n": 143,
+     "cache_n": 0,
+     "prompt_ms": 915,
+     "predicted_n": 28,
+     "predicted_ms": 1201,
+     "tok_s": 22.5,
+     "raw": "{\"en\":\"phone\",\"es\":\"teléfono\",\"g\":\"m\",\"n\":1,\"color\":\"white\"}",
+     "mode": "grammar"
+    },
+    {
+     "ms": 2186,
+     "prompt_n": 143,
+     "cache_n": 0,
+     "prompt_ms": 912,
+     "predicted_n": 29,
+     "predicted_ms": 1268,
+     "tok_s": 22.1,
+     "raw": "{\"en\":\"glasses\",\"es\":\"lentes\",\"g\":\"f\",\"n\":1,\"color\":\"black\"}",
+     "mode": "grammar"
+    },
+    {
+     "ms": 2135,
+     "prompt_n": 143,
+     "cache_n": 0,
+     "prompt_ms": 913,
+     "predicted_n": 28,
+     "predicted_ms": 1216,
+     "tok_s": 22.2,
+     "raw": "{\"en\":\"phone\",\"es\":\"teléfono\",\"g\":\"m\",\"n\":1,\"color\":\"white\"}",
+     "mode": "grammar"
+    },
+    {
+     "ms": 2169,
+     "prompt_n": 143,
+     "cache_n": 0,
+     "prompt_ms": 911,
+     "predicted_n": 29,
+     "predicted_ms": 1252,
+     "tok_s": 22.4,
+     "raw": "{\"en\":\"glasses\",\"es\":\"lentes\",\"g\":\"f\",\"n\":1,\"color\":\"black\"}",
+     "mode": "grammar"
+    },
+    {
+     "ms": 2129,
+     "prompt_n": 143,
+     "cache_n": 0,
+     "prompt_ms": 912,
+     "predicted_n": 28,
+     "predicted_ms": 1211,
+     "tok_s": 22.3,
+     "raw": "{\"en\":\"phone\",\"es\":\"teléfono\",\"g\":\"m\",\"n\":1,\"color\":\"white\"}",
+     "mode": "grammar"
+    }
+   ],
+   "default": [
+    {
+     "ms": 2048,
+     "prompt_n": 78,
+     "cache_n": 65,
+     "prompt_ms": 707,
+     "predicted_n": 30,
+     "predicted_ms": 1320,
+     "tok_s": 22.0,
+     "raw": "{\"en\":\"glasses\",\"es\":\"lentes\",\"g\":\"f\",\"n\":1,\"color\":\"black\"}",
+     "mode": "grammar"
+    },
+    {
+     "ms": 1986,
+     "prompt_n": 78,
+     "cache_n": 65,
+     "prompt_ms": 752,
+     "predicted_n": 28,
+     "predicted_ms": 1219,
+     "tok_s": 22.2,
+     "raw": "{\"en\":\"phone\",\"es\":\"teléfono\",\"g\":\"m\",\"n\":1,\"color\":\"white\"}",
+     "mode": "grammar"
+    },
+    {
+     "ms": 1413,
+     "prompt_n": 4,
+     "cache_n": 139,
+     "prompt_ms": 108,
+     "predicted_n": 29,
+     "predicted_ms": 1291,
+     "tok_s": 21.7,
+     "raw": "{\"en\":\"glasses\",\"es\":\"lentes\",\"g\":\"f\",\"n\":1,\"color\":\"black\"}",
+     "mode": "grammar"
+    },
+    {
+     "ms": 1358,
+     "prompt_n": 4,
+     "cache_n": 139,
+     "prompt_ms": 107,
+     "predicted_n": 28,
+     "predicted_ms": 1241,
+     "tok_s": 21.8,
+     "raw": "{\"en\":\"phone\",\"es\":\"teléfono\",\"g\":\"m\",\"n\":1,\"color\":\"white\"}",
+     "mode": "grammar"
+    },
+    {
+     "ms": 1412,
+     "prompt_n": 4,
+     "cache_n": 139,
+     "prompt_ms": 106,
+     "predicted_n": 29,
+     "predicted_ms": 1299,
+     "tok_s": 21.6,
+     "raw": "{\"en\":\"glasses\",\"es\":\"lentes\",\"g\":\"f\",\"n\":1,\"color\":\"black\"}",
+     "mode": "grammar"
+    },
+    {
+     "ms": 1356,
+     "prompt_n": 4,
+     "cache_n": 139,
+     "prompt_ms": 109,
+     "predicted_n": 28,
+     "predicted_ms": 1239,
+     "tok_s": 21.8,
+     "raw": "{\"en\":\"phone\",\"es\":\"teléfono\",\"g\":\"m\",\"n\":1,\"color\":\"white\"}",
+     "mode": "grammar"
+    },
+    {
+     "ms": 1421,
+     "prompt_n": 4,
+     "cache_n": 139,
+     "prompt_ms": 112,
+     "predicted_n": 29,
+     "predicted_ms": 1302,
+     "tok_s": 21.5,
+     "raw": "{\"en\":\"glasses\",\"es\":\"lentes\",\"g\":\"f\",\"n\":1,\"color\":\"black\"}",
+     "mode": "grammar"
+    },
+    {
+     "ms": 1438,
+     "prompt_n": 4,
+     "cache_n": 139,
+     "prompt_ms": 103,
+     "predicted_n": 29,
+     "predicted_ms": 1327,
+     "tok_s": 21.1,
+     "raw": "{\"en\":\"phone\",\"es\":\"teléfono\",\"g\":\"m\",\"n\":1,\"color\":\"white\"}",
+     "mode": "grammar"
+    }
+   ]
+  },
+  "ub": {
+   "512": [
+    {
+     "ms": 2041,
+     "prompt_n": 78,
+     "cache_n": 65,
+     "prompt_ms": 709,
+     "predicted_n": 30,
+     "predicted_ms": 1315,
+     "tok_s": 22.1,
+     "raw": "{\"en\":\"glasses\",\"es\":\"lentes\",\"g\":\"f\",\"n\":1,\"color\":\"black\"}",
+     "mode": "grammar"
+    },
+    {
+     "ms": 2059,
+     "prompt_n": 78,
+     "cache_n": 65,
+     "prompt_ms": 753,
+     "predicted_n": 29,
+     "predicted_ms": 1290,
+     "tok_s": 21.7,
+     "raw": "{\"en\":\"phone\",\"es\":\"teléfono\",\"g\":\"m\",\"n\":1,\"color\":\"white\"}",
+     "mode": "grammar"
+    },
+    {
+     "ms": 2274,
+     "prompt_n": 78,
+     "cache_n": 65,
+     "prompt_ms": 758,
+     "predicted_n": 34,
+     "predicted_ms": 1503,
+     "tok_s": 22.0,
+     "raw": "{\"en\":\"mouse\",\"es\":\"máquina de ratón\",\"g\":\"m\",\"n\":1,\"color\":\"black\"}",
+     "mode": "grammar"
+    },
+    {
+     "ms": 1424,
+     "prompt_n": 4,
+     "cache_n": 139,
+     "prompt_ms": 107,
+     "predicted_n": 29,
+     "predicted_ms": 1302,
+     "tok_s": 21.5,
+     "raw": "{\"en\":\"glasses\",\"es\":\"lentes\",\"g\":\"f\",\"n\":1,\"color\":\"black\"}",
+     "mode": "grammar"
+    },
+    {
+     "ms": 2036,
+     "prompt_n": 78,
+     "cache_n": 65,
+     "prompt_ms": 735,
+     "predicted_n": 29,
+     "predicted_ms": 1291,
+     "tok_s": 21.7,
+     "raw": "{\"en\":\"phone\",\"es\":\"teléfono\",\"g\":\"m\",\"n\":1,\"color\":\"white\"}",
+     "mode": "grammar"
+    },
+    {
+     "ms": 1982,
+     "prompt_n": 78,
+     "cache_n": 65,
+     "prompt_ms": 743,
+     "predicted_n": 28,
+     "predicted_ms": 1231,
+     "tok_s": 21.9,
+     "raw": "{\"en\":\"mouse\",\"es\":\"mouse\",\"g\":\"m\",\"n\":1,\"color\":\"black\"}",
+     "mode": "grammar"
+    },
+    {
+     "ms": 1428,
+     "prompt_n": 4,
+     "cache_n": 139,
+     "prompt_ms": 103,
+     "predicted_n": 29,
+     "predicted_ms": 1314,
+     "tok_s": 21.3,
+     "raw": "{\"en\":\"glasses\",\"es\":\"lentes\",\"g\":\"f\",\"n\":1,\"color\":\"black\"}",
+     "mode": "grammar"
+    },
+    {
+     "ms": 1985,
+     "prompt_n": 78,
+     "cache_n": 65,
+     "prompt_ms": 752,
+     "predicted_n": 28,
+     "predicted_ms": 1226,
+     "tok_s": 22.0,
+     "raw": "{\"en\":\"phone\",\"es\":\"teléfono\",\"g\":\"m\",\"n\":1,\"color\":\"white\"}",
+     "mode": "grammar"
+    },
+    {
+     "ms": 2015,
+     "prompt_n": 78,
+     "cache_n": 65,
+     "prompt_ms": 751,
+     "predicted_n": 28,
+     "predicted_ms": 1257,
+     "tok_s": 21.5,
+     "raw": "{\"en\":\"mouse\",\"es\":\"rat\",\"g\":\"m\",\"n\":1,\"color\":\"black\"}",
+     "mode": "grammar"
+    }
+   ],
+   "1024": [
+    {
+     "ms": 2031,
+     "prompt_n": 78,
+     "cache_n": 65,
+     "prompt_ms": 696,
+     "predicted_n": 30,
+     "predicted_ms": 1319,
+     "tok_s": 22.0,
+     "raw": "{\"en\":\"glasses\",\"es\":\"lentes\",\"g\":\"f\",\"n\":1,\"color\":\"black\"}",
+     "mode": "grammar"
+    },
+    {
+     "ms": 1995,
+     "prompt_n": 78,
+     "cache_n": 65,
+     "prompt_ms": 745,
+     "predicted_n": 28,
+     "predicted_ms": 1227,
+     "tok_s": 22.0,
+     "raw": "{\"en\":\"phone\",\"es\":\"teléfono\",\"g\":\"m\",\"n\":1,\"color\":\"white\"}",
+     "mode": "grammar"
+    },
+    {
+     "ms": 2003,
+     "prompt_n": 78,
+     "cache_n": 65,
+     "prompt_ms": 741,
+     "predicted_n": 28,
+     "predicted_ms": 1246,
+     "tok_s": 21.7,
+     "raw": "{\"en\":\"mouse\",\"es\":\"perro\",\"g\":\"m\",\"n\":1,\"color\":\"black\"}",
+     "mode": "grammar"
+    },
+    {
+     "ms": 1419,
+     "prompt_n": 4,
+     "cache_n": 139,
+     "prompt_ms": 91,
+     "predicted_n": 29,
+     "predicted_ms": 1295,
+     "tok_s": 21.6,
+     "raw": "{\"en\":\"glasses\",\"es\":\"lentes\",\"g\":\"f\",\"n\":1,\"color\":\"black\"}",
+     "mode": "grammar"
+    },
+    {
+     "ms": 1986,
+     "prompt_n": 78,
+     "cache_n": 65,
+     "prompt_ms": 750,
+     "predicted_n": 28,
+     "predicted_ms": 1227,
+     "tok_s": 22.0,
+     "raw": "{\"en\":\"phone\",\"es\":\"teléfono\",\"g\":\"m\",\"n\":1,\"color\":\"white\"}",
+     "mode": "grammar"
+    },
+    {
+     "ms": 1957,
+     "prompt_n": 78,
+     "cache_n": 65,
+     "prompt_ms": 757,
+     "predicted_n": 27,
+     "predicted_ms": 1191,
+     "tok_s": 21.8,
+     "raw": "{\"en\":\"mouse\",\"es\":\"rat\",\"g\":\"m\",\"n\":1,\"color\":\"black\"}",
+     "mode": "grammar"
+    },
+    {
+     "ms": 1474,
+     "prompt_n": 4,
+     "cache_n": 139,
+     "prompt_ms": 108,
+     "predicted_n": 30,
+     "predicted_ms": 1355,
+     "tok_s": 21.4,
+     "raw": "{\"en\":\"glasses\",\"es\":\"lentes\",\"g\":\"f\",\"n\":1,\"color\":\"black\"}",
+     "mode": "grammar"
+    },
+    {
+     "ms": 2059,
+     "prompt_n": 78,
+     "cache_n": 65,
+     "prompt_ms": 754,
+     "predicted_n": 29,
+     "predicted_ms": 1298,
+     "tok_s": 21.6,
+     "raw": "{\"en\":\"phone\",\"es\":\"teléfono\",\"g\":\"m\",\"n\":1,\"color\":\"white\"}",
+     "mode": "grammar"
+    },
+    {
+     "ms": 2010,
+     "prompt_n": 78,
+     "cache_n": 65,
+     "prompt_ms": 752,
+     "predicted_n": 28,
+     "predicted_ms": 1251,
+     "tok_s": 21.6,
+     "raw": "{\"en\":\"mouse\",\"es\":\"rat\",\"g\":\"m\",\"n\":1,\"color\":\"black\"}",
+     "mode": "grammar"
+    }
+   ]
+  },
+  "tts": {
+   "latencyOptimized + stepped (TTSKit default)": {
+    "runs": [
+     {
+      "ttfa": 2496,
+      "said": 4551,
+      "audio_s": 1.92
+     },
+     {
+      "ttfa": 3021,
+      "said": 4759,
+      "audio_s": 1.6
+     },
+     {
+      "ttfa": 3307,
+      "said": 5674,
+      "audio_s": 2.24
+     },
+     {
+      "ttfa": 2645,
+      "said": 4613,
+      "audio_s": 1.84
+     },
+     {
+      "ttfa": 3194,
+      "said": 5003,
+      "audio_s": 1.68
+     }
+    ],
+    "cached_overhead_ms": [
+     152,
+     149,
+     117
+    ]
+   },
+   "throughputOptimized + fused": {
+    "runs": [
+     {
+      "ttfa": 2037,
+      "said": 3943,
+      "audio_s": 1.76
+     },
+     {
+      "ttfa": 2167,
+      "said": 4063,
+      "audio_s": 1.76
+     },
+     {
+      "ttfa": 2540,
+      "said": 5317,
+      "audio_s": 2.64
+     },
+     {
+      "ttfa": 2139,
+      "said": 4359,
+      "audio_s": 2.08
+     },
+     {
+      "ttfa": 2633,
+      "said": 4695,
+      "audio_s": 1.92
+     }
+    ],
+    "cached_overhead_ms": [
+     141,
+     135,
+     101
+    ]
+   }
+  },
+  "parallel": {
+   "alone": 24.2,
+   "during_speech": 17.8
+  }
+ },
+ {
+  "when": "2026-11-14 21:47",
+  "swap": "total = 5120.00M  used = 3578.94M  free = 1541.06M  (encrypted)",
+  "tts": {
+   "latencyOptimized + stepped (TTSKit default)": {
+    "runs": [
+     {
+      "ttfa": 2108,
+      "said": 4012,
+      "audio_s": 1.76
+     },
+     {
+      "ttfa": 2713,
+      "said": 4549,
+      "audio_s": 1.68
+     },
+     {
+      "ttfa": 2899,
+      "said": 5523,
+      "audio_s": 2.48
+     },
+     {
+      "ttfa": 2228,
+      "said": 4051,
+      "audio_s": 1.68
+     },
+     {
+      "ttfa": 2934,
+      "said": 4909,
+      "audio_s": 1.84
+     }
+    ],
+    "cached_overhead_ms": [
+     123,
+     132,
+     132
+    ]
+   },
+   "throughputOptimized + fused": {
+    "runs": [
+     {
+      "ttfa": 1799,
+      "said": 3610,
+      "audio_s": 1.68
+     },
+     {
+      "ttfa": 1932,
+      "said": 3654,
+      "audio_s": 1.6
+     },
+     {
+      "ttfa": 2308,
+      "said": 4919,
+      "audio_s": 2.48
+     },
+     {
+      "ttfa": 1985,
+      "said": 3710,
+      "audio_s": 1.6
+     },
+     {
+      "ttfa": 2359,
+      "said": 4575,
+      "audio_s": 2.08
+     }
+    ],
+    "cached_overhead_ms": [
+     134,
+     119,
+     143
+    ]
+   }
+  }
+ }
+]

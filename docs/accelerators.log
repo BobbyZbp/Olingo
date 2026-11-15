@@ -1,0 +1,6 @@
+Olingo Live: two accelerators at once, 2026-11-15 06:14:27
+Bonsai-2 9B: llama.cpp, Metal GPU (-ngl 99). Argmax: Whisper large-v3-v20240930_626MB, TTS 0.6b, Core ML on the Neural Engine.
+alone     Bonsai-2 9B  56.4 tok/s | TTSKit 2.35x real time | WhisperKit  846 ms for 8.3 s of speech
+together  Bonsai-2 9B  54.2 tok/s | TTSKit 2.18x real time | WhisperKit  882 ms
+change    Bonsai-2 9B -4% | TTSKit -7% | WhisperKit +4% time
+(median of 3 runs alone, 3 together; 'together' = speech synthesised and transcribed while Bonsai is generating)

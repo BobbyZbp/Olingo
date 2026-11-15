@@ -1,0 +1,20 @@
+WiFi (en0): Off
+Bonsai 9B starting on :8082
+Bonsai 4B starting on :8084
+Olingo Live offline check, 2026-11-15 06:40:44
+PASS  no internet                                       2 ms  no route to the internet
+PASS  Bonsai 9B sees an image and answers            2785 ms  'I see a big blue color.' (40 tok at 55.7 tok/s)
+PASS  Bonsai 4B sees an image and answers            1704 ms  'I see a blue background.' (43 tok at 84.8 tok/s)
+PASS  Bonsai 4B answers small talk                    623 ms  'Rice is a great choice for lunch.' (45 tok at 85.4 tok/s)
+PASS  Bonsai 9B first look at the room (helper slot)   1537 ms  2 things named in 1537 ms
+PASS  Bonsai 9B phrases for a new word                977 ms  ['吃苹果', '红苹果'] in 977 ms
+PASS  Argmax bridge cold start, local models only    5575 ms  Whisper large-v3-v20240930_626MB + small fast + TTS 0.6b loaded in 5.6 s, audio out True, in True
+PASS  TTSKit synthesises a new sentence              1183 ms  wrote 0311e11cea97ebb4.wav
+PASS  cached sentence plays                          2541 ms  cached wav, audible after 157 ms
+PASS  TTSKit speaks Chinese live                     2041 ms  audible after 137 ms
+PASS  WhisperKit transcribes it back                  712 ms  'This Mac is offline right now.' in 709 ms
+PASS  Olingo device link (simulated device)          1137 ms  4 pictures, 1.0 s of microphone in, 1.0 s of speech out, link delay 0 ms
+PASS  no socket leaves this Mac                       108 ms  0 external sockets across 3 processes
+13 of 13 passed
+exit code 0
+WiFi back on: On

@@ -1,0 +1,13 @@
+.env
+.venv/
+cache/
+data/
+bridge/.build/
+bridge_bin/
+__pycache__/
+*.pyc
+.DS_Store
+*.wav
+*.webm
+*.mp4
+*.gguf

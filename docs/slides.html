@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Olingo Live</title>
+<!-- Opens from disk with WiFi off: no framework, no CDN. Arrow keys, Space or a click move between slides. -->
+<style>
+  :root { --bg:#0b0e13; --panel:#151b24; --line:#263040; --ink:#e8edf4; --dim:#8f9bac; --accent:#5ee0b0; --t1:#8f86ff; --warn:#ffc46b; }
+  * { box-sizing:border-box; }
+  html, body { margin:0; height:100%; background:#000; color:var(--ink); font-family:-apple-system, "SF Pro Display", system-ui, sans-serif; }
+  .deck { position:fixed; inset:0; display:grid; place-items:center; }
+  .slide { width:1600px; height:900px; background:var(--bg); padding:70px 90px; display:none; position:relative; transform-origin:center; overflow:hidden; }
+  .slide.on { display:block; }
+  h1 { font-size:76px; line-height:1.05; margin:0 0 18px; letter-spacing:-.02em; }
+  h2 { font-size:46px; margin:0 0 26px; letter-spacing:-.01em; }
+  p { font-size:27px; line-height:1.45; color:var(--dim); margin:0 0 14px; }
+  b, .a { color:var(--accent); font-weight:600; }
+  .kicker { font-size:19px; letter-spacing:.16em; text-transform:uppercase; color:var(--dim); margin-bottom:26px; }
+  .quote { font-size:44px; line-height:1.25; color:var(--ink); font-weight:600; margin:26px 0 30px; }
+  .chips { display:flex; flex-wrap:wrap; gap:12px; margin-top:26px; }
+  .chip { border:1px solid var(--line); background:var(--panel); border-radius:999px; padding:10px 20px; font-size:22px; color:var(--ink); }
+  .chip i { font-style:normal; color:var(--accent); font-weight:600; }
+  .two { display:grid; grid-template-columns:1fr 1fr; gap:44px; align-items:start; }
+  .shot { width:100%; border-radius:16px; border:1px solid var(--line); display:block; }
+  ol { margin:0; padding-left:34px; } li { font-size:26px; line-height:1.4; color:var(--ink); margin-bottom:15px; } li span { color:var(--dim); }
+  table { border-collapse:collapse; width:100%; } td, th { text-align:left; padding:12px 16px 12px 0; font-size:23px; vertical-align:top; border-bottom:1px solid var(--line); }
+  th { color:var(--dim); font-weight:500; font-size:17px; letter-spacing:.1em; text-transform:uppercase; } td.n { color:var(--accent); font-weight:600; white-space:nowrap; font-variant-numeric:tabular-nums; }
+  .tiers { display:grid; grid-template-columns:repeat(3, 1fr); gap:18px; margin:6px 0 26px; }
+  .tier { background:var(--panel); border:1px solid var(--line); border-radius:18px; padding:22px 24px; }
+  .tier .k { font-size:17px; letter-spacing:.12em; text-transform:uppercase; color:var(--dim); }
+  .tier .m { font-size:29px; font-weight:600; margin:8px 0 8px; } .tier .d { font-size:20px; line-height:1.4; color:var(--dim); }
+  .acc { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+  .foot { position:absolute; left:90px; right:90px; bottom:34px; display:flex; justify-content:space-between; font-size:17px; color:var(--dim); }
+  .big { font-size:120px; font-weight:700; color:var(--accent); line-height:1; letter-spacing:-.03em; }
+  .stat { background:var(--panel); border:1px solid var(--line); border-radius:18px; padding:22px 26px; } .stat p { font-size:21px; margin:8px 0 0; }
+  .stats { display:grid; grid-template-columns:repeat(4, 1fr); gap:18px; margin-bottom:26px; } .stat .v { font-size:54px; font-weight:700; color:var(--accent); letter-spacing:-.02em; }
+  @media print { @page { size:1600px 900px; margin:0; } html, body { height:auto; background:var(--bg); } .deck { position:static; display:block; }
+    .slide { display:block !important; transform:none !important; page-break-after:always; break-after:page; -webkit-print-color-adjust:exact; print-color-adjust:exact; } }
+</style>
+</head>
+<body>
+<div class="deck">
+
+<section class="slide on">
+  <div class="kicker">Cornell Local AI Hackathon · Recreate</div>
+  <h1>Olingo Live</h1>
+  <div class="quote">Lily can't see you.<br>Olingo can, and no one else ever will.</div>
+  <p>Duolingo's Video Call with Lily, recreated to run fully on this Mac with WiFi off: a language tutor that sees
+     what you show it, talks with you, and hears how clearly you say each new word.</p>
+  <div class="chips">
+    <span class="chip"><i>PrismML</i> Bonsai-2 9B · vision and conversation</span>
+    <span class="chip"><i>PrismML</i> Bonsai-2 4B · short lines</span>
+    <span class="chip"><i>Argmax</i> WhisperKit · hears</span>
+    <span class="chip"><i>Argmax</i> TTSKit · speaks</span>
+  </div>
+  <div class="foot"><span>WiFi off · 0 external connections, checked every 5 seconds</span><span>1 / 5</span></div>
+</section>
+
+<section class="slide">
+  <div class="kicker">Live demo</div>
+  <div class="two">
+    <div>
+      <h2>What you are about to see</h2>
+      <ol>
+        <li>It opens with something it already saw. <span>Bonsai-2 9B took one look while the call rang.</span></li>
+        <li>I repeat the word, then two phrases. <span>Each character is coloured by WhisperKit's word confidence.</span></li>
+        <li>We just talk. <span>Bonsai-2 9B, text only: it looks at a frame only when I ask.</span></li>
+        <li>"What is this?" <span>One 512 x 288 frame; the first sentence is spoken while the rest is written.</span></li>
+        <li>Goodbye. <span>The receipt: what it saw, what it kept, what left the Mac.</span></li>
+      </ol>
+    </div>
+    <img class="shot" src="img/4_phrase.jpg" alt="A call: a phrase explained, repeated and scored">
+  </div>
+  <div class="foot"><span>Every number on the page is measured during the call</span><span>2 / 5</span></div>
+</section>
+
+<section class="slide">
+  <div class="kicker">How it uses Bonsai and Argmax</div>
+  <h2>Code decides which model answers. Never a model.</h2>
+  <div class="tiers">
+    <div class="tier"><div class="k">Tier 0</div><div class="m">No model</div><div class="d">Commands, yes and no, scoring a repeated word, swapping learned words into sentences. Half of the responses in a call.</div></div>
+    <div class="tier"><div class="k">Tier 1 · GPU</div><div class="m" style="color:var(--t1)">Bonsai-2, text only</div><div class="d">Conversation on the 9B with 30 seconds of talk and a compressed memory. Two short lines on the 4B.</div></div>
+    <div class="tier"><div class="k">Tier 2 · GPU</div><div class="m a">Bonsai-2 9B + one frame</div><div class="d">Only when you talk about the picture, or the conversation has run dry. 1 look in 560 frames.</div></div>
+  </div>
+  <div class="acc">
+    <div class="tier"><div class="k">Neural Engine</div><div class="m">Argmax WhisperKit</div><div class="d">Whisper large-v3 and Whisper small, both loaded: the small one answers first, the large one when unsure. Word probabilities drive the colours; the word being practised is passed as a prompt.</div></div>
+    <div class="tier"><div class="k">Neural Engine</div><div class="m">Argmax TTSKit</div><div class="d">One voice across two languages, native in the one you learn. Sound starts at the first chunk; the next sentence is made while this one plays; every sentence is cached.</div></div>
+  </div>
+  <div class="foot"><span>Two accelerators at once: while Bonsai generates, speech work costs it 4%; TTSKit loses 7%, WhisperKit 4%</span><span>3 / 5</span></div>
+</section>
+
+<section class="slide">
+  <div class="kicker">Measured on this MacBook Pro, M4 Pro, 24 GB</div>
+  <div class="stats">
+    <div class="stat"><div class="v">0.9 to 1.6 s</div><p>from the end of your sentence to Olingo's voice</p></div>
+    <div class="stat"><div class="v">2.3 GB</div><p>Bonsai-2 9B and 4B in memory side by side</p></div>
+    <div class="stat"><div class="v">13 of 13</div><p>checks passed with WiFi off, from a cold start</p></div>
+    <div class="stat"><div class="v">0</div><p>external connections; frames and audio never touch the disk</p></div>
+  </div>
+  <table>
+    <tr><th>Step</th><th>Model</th><th>Time</th></tr>
+    <tr><td>Looks at a frame and answers</td><td>Bonsai-2 9B</td><td class="n">56 tok/s · first sentence about 0.9 s</td></tr>
+    <tr><td>Short line</td><td>Bonsai-2 4B</td><td class="n">77 to 85 tok/s · reply in 0.6 to 0.8 s</td></tr>
+    <tr><td>"Has this question been asked before?"</td><td>Bonsai-2 9B, second slot</td><td class="n">0.27 s</td></tr>
+    <tr><td>Hears an English sentence / a Chinese word</td><td>WhisperKit small / large-v3</td><td class="n">0.15 to 0.3 s / 0.7 to 0.9 s</td></tr>
+    <tr><td>First sound of a new sentence / a cached one</td><td>TTSKit</td><td class="n">0.35 s / 0.15 s</td></tr>
+  </table>
+  <div class="foot"><span>docs/offline_check.log · docs/accelerators.log · 55 unit tests</span><span>4 / 5</span></div>
+</section>
+
+<section class="slide">
+  <div class="kicker">Why local</div>
+  <div class="two">
+    <div>
+      <h2>It remembers your words,<br>not your face.</h2>
+      <p>A tutor that watches you through a camera is only acceptable if nothing leaves the room. So the frames and
+         the audio live in memory only, the page proves that no connection leaves the Mac, and after the call the
+         only thing kept is the list of words you learned.</p>
+      <p style="margin-top:22px">Right-sized on purpose: rules before models, the small model before the large one,
+         one frame instead of video, cached speech instead of new speech.</p>
+      <p style="margin-top:22px">Next: the same call through a pocket device (a Raspberry Pi as camera, microphone
+         and speaker over Bluetooth), so it can travel.</p>
+    </div>
+    <img class="shot" src="img/7_receipt.jpg" alt="The receipt after a call">
+  </div>
+  <div class="foot"><span>Olingo Live</span><span>5 / 5</span></div>
+</section>
+
+</div>
+<script>
+  const slides = [...document.querySelectorAll('.slide')];
+  let i = Math.max(0, Math.min(slides.length - 1, (parseInt(location.hash.slice(1)) || 1) - 1));
+  function fit() { const k = Math.min(innerWidth / 1600, innerHeight / 900); slides.forEach(s => s.style.transform = `scale(${k})`); }
+  function show(n) { i = Math.max(0, Math.min(slides.length - 1, n)); slides.forEach((s, j) => s.classList.toggle('on', j === i)); history.replaceState(null, '', '#' + (i + 1)); }
+  addEventListener('keydown', e => {
+    if (['ArrowRight', 'ArrowDown', ' ', 'PageDown', 'Enter'].includes(e.key)) { e.preventDefault(); show(i + 1); }
+    if (['ArrowLeft', 'ArrowUp', 'PageUp', 'Backspace'].includes(e.key)) { e.preventDefault(); show(i - 1); }
+    if (e.key === 'f') document.documentElement.requestFullscreen();
+  });
+  addEventListener('click', e => show(i + (e.clientX < innerWidth / 3 ? -1 : 1)));
+  addEventListener('resize', fit);
+  fit(); show(i);
+</script>
+</body>
+</html>
