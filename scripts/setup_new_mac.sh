@@ -16,7 +16,7 @@ HERE=$(cd "$(dirname "$0")/.." && pwd)
 [ "$(uname -m)" = "arm64" ] || { echo "Apple Silicon is required (Argmax runs on the Neural Engine)."; exit 1; }
 mkdir -p "$H" "$HOME/Documents/huggingface"
 [ "$HERE" = "$H/olingo" ] || { echo "Move this repository to $H/olingo first."; exit 1; }
-echo "1/5 downloading the backup (about 9.5 GB)"
+echo "1/5 downloading the backup (about 10 GB)"
 hf download "$REPO" --repo-type dataset --local-dir "$H/_backup"
 echo "2/5 putting things in place"
 [ -d "$H/models" ] || mv "$H/_backup/models" "$H/models"
@@ -25,6 +25,8 @@ echo "2/5 putting things in place"
 [ -d "$HOME/Documents/huggingface/models" ] || mv "$H/_backup/argmax-models" "$HOME/Documents/huggingface/models"
 [ -d "$H/olingo/data" ] || mv "$H/_backup/data" "$H/olingo/data"
 [ -d "$H/pi_backup" ] || mv "$H/_backup/pi" "$H/pi_backup"
+[ -d "$H/olingo/cache" ] || mv "$H/_backup/cache" "$H/olingo/cache" 2>/dev/null || true          # sentences already spoken
+[ -d "$H/olingo/bridge_bin" ] || mv "$H/_backup/bridge_bin" "$H/olingo/bridge_bin" 2>/dev/null || true
 chmod +x "$H"/bin/llama/* 2>/dev/null || true
 xattr -dr com.apple.quarantine "$H/bin" 2>/dev/null || true
 echo "3/5 Python environment"
