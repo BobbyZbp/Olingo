@@ -10,6 +10,8 @@ import IOBluetooth
 setvbuf(stdout, nil, _IONBF, 0)
 func note(_ s: String) { FileHandle.standardError.write((s + "\n").data(using: .utf8)!) }
 
+var sources: [DispatchSourceSignal] = []
+
 final class Link: NSObject, IOBluetoothRFCOMMChannelDelegate {
     var channel: IOBluetoothRFCOMMChannel?
     let out = FileHandle.standardOutput
@@ -28,7 +30,7 @@ final class Link: NSObject, IOBluetoothRFCOMMChannelDelegate {
         let inp = FileHandle.standardInput
         while true {
             let d = inp.availableData
-            if d.isEmpty { note("stdin closed"); DispatchQueue.main.async { self.channel?.close(); exit(0) }; return }
+            if d.isEmpty { note("stdin closed"); DispatchQueue.main.async { self.channel?.close(); self.channel?.getDevice()?.closeConnection(); exit(0) }; return }
             guard let ch = channel else { return }
             let mtu = max(Int(ch.getMTU()), 64)
             var i = 0
@@ -49,9 +51,30 @@ let args = CommandLine.arguments
 guard args.count >= 2, let dev = IOBluetoothDevice(addressString: args[1]) else { note("usage: olingo-bt <address> [channel]"); exit(64) }
 let chan = BluetoothRFCOMMChannelID(args.count >= 3 ? (UInt8(args[2]) ?? 1) : 1)
 let link = Link()
-var ch: IOBluetoothRFCOMMChannel?
-let r = dev.openRFCOMMChannelAsync(&ch, withChannelID: chan, delegate: link)
-if r != kIOReturnSuccess { note("error \(r)"); exit(2) }
-link.channel = ch
-DispatchQueue.main.asyncAfter(deadline: .now() + 15) { if !(link.channel?.isOpen() ?? false) { note("error timeout"); exit(2) } }
+
+/// Open the channel. A link left over from an earlier run (the program that held it was stopped) makes a new
+/// channel wait for ever: if the first try does not come up, the old link is dropped and it is tried once more.
+func open(_ attempt: Int) {
+    var ch: IOBluetoothRFCOMMChannel?
+    let r = dev.openRFCOMMChannelAsync(&ch, withChannelID: chan, delegate: link)
+    if r != kIOReturnSuccess && attempt == 2 { note("error \(r)"); exit(2) }
+    link.channel = ch
+    DispatchQueue.main.asyncAfter(deadline: .now() + (attempt == 1 ? 7 : 10)) {
+        if link.channel?.isOpen() ?? false { return }
+        if attempt == 2 { note("error timeout"); exit(2) }
+        note("no answer: dropping the old link and trying again")
+        link.channel?.close()
+        dev.closeConnection()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) { open(2) }
+    }
+}
+/// Leave nothing behind: when asked to stop, close the channel and the link first.
+for sig in [SIGTERM, SIGINT, SIGHUP] {
+    signal(sig, SIG_IGN)
+    let src = DispatchSource.makeSignalSource(signal: sig, queue: .main)
+    src.setEventHandler { link.channel?.close(); dev.closeConnection(); exit(0) }
+    src.resume()
+    sources.append(src)
+}
+open(1)
 RunLoop.main.run()
