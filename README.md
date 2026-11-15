@@ -135,7 +135,7 @@ scripts/stop.sh
 | `backend/agent.py`, `bridge/bt/` | The link to the Raspberry Pi over Bluetooth. |
 | `backend/privacy.py` | The socket audit and the memory check. |
 | `web/index.html` | The page. Plain HTML, CSS and JavaScript; no framework, nothing loaded from the internet. |
-| `docs/slides.html` | The four-minute presentation; opens offline. |
+| `docs/pitch.html` | The two-slide presentation; opens offline (arrow keys). |
 
 ## Hackathon rules
 

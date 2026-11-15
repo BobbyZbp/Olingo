@@ -32,7 +32,7 @@
   .dot { display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--bad); margin-right:6px; animation:blink 1.6s infinite; }
   @keyframes blink { 50% { opacity:.25; } }
   #avatar { position:absolute; right:18px; top:16px; width:116px; text-align:center; }
-  #disc { display:none; }                           /* no logo, no mascot: only the word that says what it is doing */
+  #avatar #disc { display:none !important; }        /* no logo, no mascot: only the word that says what it is doing */
   #disc { position:relative; width:104px; height:104px; margin:0 auto; border-radius:50%; background:#1b2733; border:2px solid var(--line); display:grid; place-items:center; overflow:visible; }
   #ring { position:absolute; inset:-7px; border-radius:50%; border:3px solid var(--accent); opacity:0; will-change:transform,opacity; }
   #face { width:88px; height:88px; }
@@ -395,7 +395,54 @@ function drawHud() {
 }
 
 /* ---------- events from the backend ---------- */
+/* ---------- photo mode (?shoot): the page photographs itself at the moments worth showing ----------
+   You allow Chrome to share "this tab" once; from then on a picture is saved when it offers a word, when a word and a
+   phrase are scored, during conversation, when it looks, and at the receipt. P takes one more at any time. */
+const SHOOT = new URLSearchParams(location.search).has('shoot');
+let shotVideo = null, shotExtra = 0; const shotDone = new Set();
+async function shootStart() {
+  try {
+    const st = await navigator.mediaDevices.getDisplayMedia({ video: { displaySurface: 'browser', width: { ideal: 2880 }, height: { ideal: 1800 }, frameRate: { ideal: 15 } }, audio: false, preferCurrentTab: true, selfBrowserSurface: 'include' });
+    shotVideo = document.createElement('video'); shotVideo.srcObject = st; shotVideo.muted = true; await shotVideo.play();
+    $('shootbar').innerHTML = 'Photo mode is <b>on</b>. Now start the call as usual (level Intermediate shows the phrases). Press <b>P</b> for an extra photo.';
+    setTimeout(() => { $('shootbar').style.display = 'none'; shot('1_start', true); }, 3500);      // the bar goes away: it must not be in any picture
+  } catch (e) { $('shootbar').textContent = 'Photo mode could not start: ' + e.message; }
+}
+async function shot(name, once) {
+  if (!shotVideo || (once && shotDone.has(name))) return;
+  shotDone.add(name);
+  const bar = $('shootbar'), dot = $('shootdot'); bar.style.visibility = dot.style.visibility = 'hidden';   // not in the picture
+  await new Promise(r => setTimeout(r, 500));
+  const c = document.createElement('canvas'); c.width = shotVideo.videoWidth; c.height = shotVideo.videoHeight;
+  c.getContext('2d').drawImage(shotVideo, 0, 0);
+  bar.style.visibility = dot.style.visibility = 'visible';
+  const blob = await new Promise(r => c.toBlob(r, 'image/png'));
+  const res = await (await fetch('/api/shot?name=' + name, { method: 'POST', body: blob })).json();
+  $('shootdot').textContent = res.ok ? `saved ${name} (${shotDone.size})` : `could not save ${name}`;
+}
+function shootOn(m) {                                  // which events are worth a picture
+  if (!shotVideo) return;
+  const later = (name, ms) => setTimeout(() => shot(name, true), ms);
+  if (m.t === 'say' && m.role !== 'part' && /learn|想学|apprendre|学び/i.test(m.text || '')) later('2_offer', 1200);
+  else if (m.t === 'score') later(shotDone.has('3_drill') ? '4_phrase' : '3_drill', 900);
+  else if (m.t === 'turn' && !m.silent && m.tier === 1 && m.model === '9B') later('5_conversation', 1500);
+  else if (m.t === 'turn' && !m.silent && m.tier === 2) later('6_look', 1500);
+  else if (m.t === 'receipt') later('7_receipt', 1500);
+}
+if (SHOOT) addEventListener('DOMContentLoaded', () => {
+  const b = document.createElement('div'); b.id = 'shootbar';
+  b.style.cssText = 'position:fixed;left:50%;top:10px;transform:translateX(-50%);z-index:99;background:#111a;backdrop-filter:blur(8px);border:1px solid #5ee0b0;color:#e8edf4;border-radius:12px;padding:9px 16px;font-size:13.5px;display:flex;gap:12px;align-items:center';
+  b.innerHTML = '<button id="shootgo" style="background:#5ee0b0;color:#06281c;border:0;border-radius:8px;padding:7px 12px;font-weight:600;cursor:pointer">Turn photo mode on</button><span>then choose "This tab" and press Share</span>';
+  document.body.appendChild(b);
+  const d = document.createElement('div'); d.id = 'shootdot';
+  d.style.cssText = 'position:fixed;right:10px;bottom:8px;z-index:99;font-size:11px;color:#5ee0b0;opacity:.8';
+  document.body.appendChild(d);
+  document.getElementById('shootgo').onclick = shootStart;
+  addEventListener('keydown', e => { if (e.code === 'KeyP' && shotVideo) shot('extra_' + (++shotExtra)); });
+});
+
 function handle(m) {
+  if (SHOOT) shootOn(m);
   switch (m.t) {
     case 'hello':
       if (inCall || !$('start')) break;

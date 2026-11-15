@@ -3,79 +3,69 @@
 <head>
 <meta charset="utf-8">
 <title>Olingo Live</title>
-<!-- Three slides: a 30-second intro (1, 2) and how Bonsai and Argmax are used (3).
-     Opens from disk with WiFi off: no framework, no CDN. Arrow keys, Space or a click move between slides. -->
+<!-- Two slides: what we recreated and its limit (1), how Bonsai and Argmax are used (2).
+     Opens from disk with WiFi off: no framework, no CDN. Arrow keys, Space or a click move between slides.
+     Every block is in the normal flow (no absolute positions, no fixed heights), so text cannot run into other text. -->
 <style>
   :root { --paper:#f5f1e8; --ink:#15181d; --dim:#6b6f78; --line:#d9d3c5; --card:#fffdf8;
-          --red:#e2483d; --green:#0c9b6a; --violet:#5a4fcf; --night:#0d1117; }
+          --red:#e2483d; --green:#0c9b6a; --violet:#5a4fcf; --lily:#d082ff; }
   * { box-sizing:border-box; }
-  html, body { margin:0; height:100%; background:#000; color:var(--ink); font-family:-apple-system, "SF Pro Display", "Helvetica Neue", system-ui, sans-serif; }
+  html, body { margin:0; height:100%; background:#000; color:var(--ink); font-family:-apple-system, "SF Pro Display", "Helvetica Neue", "Segoe UI", system-ui, sans-serif; }
   .deck { position:fixed; inset:0; display:grid; place-items:center; }
-  .slide { width:1600px; height:900px; background:var(--paper); display:none; position:relative; transform-origin:center; overflow:hidden; }
-  .slide.on { display:block; }
-  .tag { font-size:20px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; }
-  .pg { position:absolute; right:56px; bottom:34px; font-size:18px; color:var(--dim); font-variant-numeric:tabular-nums; }
+  .slide { width:1600px; height:900px; flex:none; background:var(--paper); display:none; transform-origin:center; overflow:hidden; }
+  .tag { font-size:20px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--dim); }
 
-  /* 1: the problem */
-  .s1 { display:grid; grid-template-columns:1fr 600px; }
-  .s1 .l { padding:84px 40px 0 96px; }
-  .s1 .tag { color:var(--dim); }
-  .s1 h1 { font-size:168px; line-height:.92; font-weight:800; letter-spacing:-.045em; margin:46px 0 0; }
+  /* 1: what we recreated, and its limit. The right panel has the picture's own background colour, so the picture
+     has no visible edge; it is shown larger than the panel and clipped to the three phones. */
+  .s1.on { display:grid; grid-template-columns:minmax(0, 1fr) 1010px; }
+  .s1 .l { padding:80px 44px 60px 80px; display:flex; flex-direction:column; min-width:0; }
+  .s1 h1 { font-size:116px; line-height:.96; font-weight:800; letter-spacing:-.045em; margin:38px 0 0; }
   .s1 h1 em { font-style:normal; color:var(--red); }
-  .s1 .sub { font-size:34px; line-height:1.3; color:var(--dim); margin-top:44px; max-width:760px; }
+  .s1 .sub { font-size:27px; line-height:1.36; color:var(--dim); margin-top:auto; padding-top:24px; }
   .s1 .sub b { color:var(--ink); font-weight:700; }
-  .s1 .r { background:var(--ink); color:#fff; padding:96px 64px 0 64px; }
-  .lim { padding:30px 0 32px; border-top:1px solid #353a44; }
-  .lim:first-child { border-top:0; padding-top:0; }
-  .lim .n { font-size:20px; font-weight:700; letter-spacing:.14em; color:var(--red); }
-  .lim .t { font-size:44px; font-weight:750; letter-spacing:-.02em; line-height:1.08; margin:10px 0 10px; }
-  .lim .d { font-size:23px; line-height:1.38; color:#a4abb8; }
+  .s1 .r { background:var(--lily); color:#2a1147; display:flex; flex-direction:column; min-width:0; }
+  .s1 .pic { height:590px; flex:none; overflow:hidden; display:flex; justify-content:center; align-items:flex-start; }
+  .s1 .pic img { width:1092px; flex:none; display:block; margin-top:3px; }
+  .s1 .cap { padding:14px 78px 0; }
+  .s1 .cap .k { font-size:19px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:#6a2aa8; }
+  .s1 .cap .t { font-size:40px; font-weight:800; line-height:1.16; letter-spacing:-.02em; margin-top:10px; }
+  .s1 .credit { margin-top:auto; padding:16px 78px 30px; display:flex; justify-content:space-between; font-size:17px; color:#6a2aa8; }
 
-  /* 2: what we built */
-  .s2 { background:var(--night); color:#fff; }
-  .s2 .l { position:absolute; left:96px; top:84px; width:600px; }
-  .s2 .tag { color:#3ddc9c; }
-  .s2 h1 { font-size:112px; line-height:.94; font-weight:800; letter-spacing:-.04em; margin:40px 0 0; }
-  .s2 h1 em { font-style:normal; color:#3ddc9c; }
-  .fix { margin-top:54px; display:grid; gap:24px; }
-  .fix div { font-size:32px; font-weight:700; letter-spacing:-.01em; line-height:1.2; padding-left:26px; border-left:5px solid #3ddc9c; }
-  .fix span { display:block; font-size:22px; font-weight:400; color:#98a1b0; margin-top:5px; letter-spacing:0; }
-  .s2 img { position:absolute; left:760px; top:150px; width:980px; border-radius:18px; box-shadow:0 40px 120px rgba(0,0,0,.7), 0 0 0 1px #2a3240; }
-  .s2 .cap { position:absolute; left:760px; top:108px; font-size:19px; color:#98a1b0; }
-  .s2 .pg { color:#6c7686; }
-
-  /* 3: under the hood */
-  .s3 { padding:70px 96px 0; }
-  .s3 .tag { color:var(--dim); }
-  .s3 h1 { font-size:64px; line-height:1; font-weight:800; letter-spacing:-.035em; margin:22px 0 40px; }
-  .s3 h1 .g { color:var(--green); } .s3 h1 .v { color:var(--violet); }
-  .flow { display:grid; grid-template-columns:300px 1fr 300px; gap:16px; }
-  .chip { font-size:16px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:#fff; padding:9px 18px; border-radius:10px 10px 0 0; }
-  .col { background:var(--card); border:1px solid var(--line); border-top:0; border-radius:0 0 16px 16px; padding:22px 24px 24px; height:290px; }
+  /* 2: under the hood */
+  .s2.on { display:flex; flex-direction:column; }
+  .s2 { padding:60px 96px 36px; }
+  .s2 h1 { font-size:56px; line-height:1.06; font-weight:800; letter-spacing:-.035em; margin:18px 0 0; }
+  .s2 h1 .g { color:var(--green); } .s2 h1 .v { color:var(--violet); }
+  .flow { display:grid; grid-template-columns:290px minmax(0, 1fr) 290px; gap:18px; margin-top:34px; align-items:stretch; }
+  .stage { display:flex; flex-direction:column; min-width:0; }
+  .chip { font-size:16px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:#fff; padding:10px 22px; border-radius:14px 14px 0 0; }
+  .body { flex:1; background:var(--card); border:1px solid var(--line); border-top:0; border-radius:0 0 14px 14px; padding:22px 22px 24px; display:flex; flex-direction:column; }
   .ane .chip { background:var(--violet); } .gpu .chip { background:var(--green); }
   .who { font-size:15px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--dim); }
-  .name { font-size:36px; font-weight:800; letter-spacing:-.025em; margin:4px 0 12px; line-height:1.05; }
+  .name { font-size:36px; font-weight:800; letter-spacing:-.025em; line-height:1.1; margin-top:4px; }
   .ane .name { color:var(--violet); } .gpu .name { color:var(--green); }
-  .txt { font-size:21px; line-height:1.36; color:#3c4048; }
-  .num { font-size:22px; font-weight:750; margin-top:12px; font-variant-numeric:tabular-nums; }
-  .routes { display:grid; grid-template-columns:repeat(3, 1fr); gap:12px; margin-top:6px; }
-  .rt { border:1px solid var(--line); border-radius:12px; padding:14px 16px; background:var(--paper); }
+  .txt { font-size:21px; line-height:1.38; color:#3c4048; margin-top:12px; }
+  .num { margin-top:auto; padding-top:16px; }
+  .num b { display:block; font-size:30px; font-weight:800; letter-spacing:-.02em; color:var(--ink); font-variant-numeric:tabular-nums; }
+  .num span { display:block; font-size:17px; color:var(--dim); margin-top:2px; }
+  .routes { flex:1; display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:14px; margin-top:16px; }
+  .rt { border:1px solid var(--line); border-radius:12px; padding:16px 18px 18px; background:var(--paper); display:flex; flex-direction:column; }
   .rt .q { font-size:15px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--dim); }
-  .rt .m { font-size:27px; font-weight:800; letter-spacing:-.02em; margin:4px 0 6px; }
-  .rt .d { font-size:18px; line-height:1.33; color:#3c4048; }
-  .rt .n { font-size:19px; font-weight:750; color:var(--green); margin-top:8px; }
-  .proof { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:26px; }
-  .pf { display:grid; grid-template-columns:auto 1fr; gap:26px; align-items:center; background:var(--ink); color:#fff; border-radius:16px; padding:22px 30px; height:158px; }
-  .pf .big { font-size:74px; font-weight:800; letter-spacing:-.04em; line-height:1; font-variant-numeric:tabular-nums; white-space:nowrap; }
-  .pf .big small { font-size:30px; font-weight:700; letter-spacing:0; opacity:.75; }
+  .rt .m { font-size:30px; font-weight:800; letter-spacing:-.02em; margin-top:4px; }
+  .rt .d { font-size:19px; line-height:1.35; color:#3c4048; margin-top:6px; }
+  .rt .num b { font-size:26px; color:var(--green); }
+  .proof { display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:18px; margin-top:22px; }
+  .pf { display:flex; gap:30px; align-items:center; background:var(--ink); color:#fff; border-radius:14px; padding:26px 34px; }
+  .pf .big { flex:none; font-size:66px; font-weight:800; letter-spacing:-.04em; line-height:1; font-variant-numeric:tabular-nums; white-space:nowrap; }
+  .pf .big small { font-size:28px; font-weight:700; letter-spacing:0; opacity:.75; }
   .pf.g .big { color:#3ddc9c; } .pf.v .big { color:#a89cff; }
-  .pf .h { font-size:25px; font-weight:750; letter-spacing:-.01em; line-height:1.15; }
-  .pf .p { font-size:19px; line-height:1.35; color:#a4abb8; margin-top:6px; }
-  .s3 .src { position:absolute; left:96px; bottom:34px; font-size:18px; color:var(--dim); }
+  .pf .h { font-size:25px; font-weight:750; letter-spacing:-.01em; line-height:1.18; }
+  .pf .p { font-size:19px; line-height:1.36; color:#a4abb8; margin-top:6px; }
+  .s2 .foot { margin-top:auto; padding-top:20px; display:flex; justify-content:space-between; gap:30px; font-size:18px; color:var(--dim); }
 
   @media print { @page { size:1600px 900px; margin:0; } html, body { height:auto; background:#fff; } .deck { position:static; display:block; }
-    .slide { display:block !important; transform:none !important; page-break-after:always; break-after:page; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
-    .slide.s1 { display:grid !important; } }
+    .slide { transform:none !important; page-break-after:always; break-after:page; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    .s1 { display:grid !important; grid-template-columns:minmax(0, 1fr) 1010px; } .s2 { display:flex !important; flex-direction:column; } }
 </style>
 </head>
 <body>
@@ -83,73 +73,62 @@
 
 <section class="slide s1 on">
   <div class="l">
-    <div class="tag">Duolingo · Video Call with Lily</div>
-    <h1>A video call<br>that <em>can't<br>see you.</em></h1>
-    <div class="sub">You talk to Lily to practise a language. <b>It is a great idea, with three limits.</b></div>
+    <div class="tag">What we recreated</div>
+    <h1>A video<br>call that<br><em>can't<br>see you.</em></h1>
+    <div class="sub">Our version is <b>Olingo Live: it sees your world, and it runs entirely on this Mac.</b></div>
   </div>
   <div class="r">
-    <div class="lim"><div class="n">01</div><div class="t">Lily only hears you.</div><div class="d">Your room, the thing in your hand: she knows none of it.</div></div>
-    <div class="lim"><div class="n">02</div><div class="t">Duolingo picks the topic.</div><div class="d">You practise the lesson's words, not the words for your own life.</div></div>
-    <div class="lim"><div class="n">03</div><div class="t">It lives in the cloud.</div><div class="d">Your voice leaves your device. No connection, no call.</div></div>
+    <div class="pic"><img src="img/duolingo_video_call.png" alt="Duolingo's Video Call with Lily: the lesson path, Calling Lily, and Lily on the call"></div>
+    <div class="cap">
+      <div class="k">Duolingo's Video Call with Lily · the limit</div>
+      <div class="t">Lily only hears you, Duolingo picks the topic, and your voice goes to the cloud.</div>
+    </div>
+    <div class="credit"><span>Image: Duolingo</span><span>1 / 2</span></div>
   </div>
-  <div class="pg" style="color:#7d8594">1 / 3</div>
 </section>
 
 <section class="slide s2">
-  <div class="l">
-    <div class="tag">Olingo Live · what we built</div>
-    <h1>A call that sees <em>your world.</em></h1>
-    <div class="fix">
-      <div>Hold up anything. Ask "What is this?"<span>It looks, answers, and teaches you the word.</span></div>
-      <div>Your room is the lesson.<span>Say it back: every character is coloured by how clearly it was heard.</span></div>
-      <div>WiFi off. Nothing leaves this Mac.<span>It remembers your words, not your face.</span></div>
-    </div>
-  </div>
-  <div class="cap">A real call on this MacBook Pro, WiFi off</div>
-  <img src="img/4_phrase.jpg" alt="A call: a phrase explained, repeated and scored">
-  <div class="pg">2 / 3</div>
-</section>
-
-<section class="slide s3">
   <div class="tag">Under the hood · every model runs on this Mac</div>
   <h1><span class="g">PrismML Bonsai</span> thinks on the GPU.<br><span class="v">Argmax</span> hears and speaks on the Neural Engine.</h1>
+
   <div class="flow">
-    <div class="ane">
-      <div class="chip">Hears · Neural Engine</div>
-      <div class="col">
-        <div class="who">Argmax</div><div class="name">WhisperKit</div>
-        <div class="txt">Whisper small answers first, large-v3 redoes it when unsure. Word probabilities colour each character you repeat.</div>
-        <div class="num">0.15 to 0.3 s</div>
+    <div class="stage ane">
+      <div class="chip">1 · Hears</div>
+      <div class="body">
+        <div class="who">Argmax · Neural Engine</div><div class="name">WhisperKit</div>
+        <div class="txt">Whisper small first, large-v3 when unsure. Word probabilities colour each character you say back.</div>
+        <div class="num"><b>0.15 to 0.3 s</b><span>an English sentence</span></div>
       </div>
     </div>
-    <div class="gpu">
-      <div class="chip">Thinks · GPU · code picks the route, never a model</div>
-      <div class="col">
-        <div class="who">PrismML</div><div class="name" style="margin-bottom:10px">Bonsai-2, three routes</div>
+    <div class="stage gpu">
+      <div class="chip">2 · Thinks · code picks the route, never a model</div>
+      <div class="body">
+        <div class="who">PrismML · GPU (Metal)</div><div class="name">Bonsai-2, three routes</div>
         <div class="routes">
-          <div class="rt"><div class="q">Short lines</div><div class="m">4B</div><div class="d">Replies that need no context.</div><div class="n">77 to 85 tok/s</div></div>
-          <div class="rt"><div class="q">Conversation</div><div class="m">9B</div><div class="d">Text only, cached prompt.</div><div class="n">first sentence 0.5 to 1.1 s</div></div>
-          <div class="rt"><div class="q">"What is this?"</div><div class="m">9B + vision</div><div class="d">One 512 x 288 frame.</div><div class="n">56 tok/s</div></div>
+          <div class="rt"><div class="q">Short lines</div><div class="m">4B</div><div class="d">Replies that need no context.</div><div class="num"><b>77 to 85 tok/s</b></div></div>
+          <div class="rt"><div class="q">Conversation</div><div class="m">9B</div><div class="d">Text only, cached prompt.</div><div class="num"><b>0.5 to 1.1 s</b><span>to the first sentence</span></div></div>
+          <div class="rt"><div class="q">"What is this?"</div><div class="m">9B + vision</div><div class="d">One 512 x 288 frame.</div><div class="num"><b>56 tok/s</b></div></div>
         </div>
       </div>
     </div>
-    <div class="ane">
-      <div class="chip">Speaks · Neural Engine</div>
-      <div class="col">
-        <div class="who">Argmax</div><div class="name">TTSKit</div>
-        <div class="txt">One voice across two languages. Sound starts at the first chunk, while Bonsai is still writing.</div>
-        <div class="num">first sound 0.35 s</div>
+    <div class="stage ane">
+      <div class="chip">3 · Speaks</div>
+      <div class="body">
+        <div class="who">Argmax · Neural Engine</div><div class="name">TTSKit</div>
+        <div class="txt">One voice across two languages. It starts speaking while Bonsai is still writing.</div>
+        <div class="num"><b>0.35 s</b><span>to the first sound</span></div>
       </div>
     </div>
   </div>
+
   <div class="proof">
     <div class="pf g"><div class="big">1.5 <small>+</small> 0.9 <small>GB</small></div>
       <div><div class="h">Ternary weights: 9B and 4B both stay loaded.</div><div class="p">That is why routing works: no loading, no swapping.</div></div></div>
     <div class="pf v"><div class="big">4<small>%</small></div>
-      <div><div class="h">Two accelerators at the same time.</div><div class="p">All that speech work on the Neural Engine costs Bonsai: 56.4 to 54.2 tok/s.</div></div></div>
+      <div><div class="h">Two accelerators at the same time.</div><div class="p">All the speech work on the Neural Engine slows Bonsai from 56.4 to 54.2 tok/s.</div></div></div>
   </div>
-  <div class="src">Measured on this MacBook Pro, M4 Pro, 24 GB · your voice ends, Olingo's starts 0.9 to 1.6 s later</div>
-  <div class="pg">3 / 3</div>
+
+  <div class="foot"><span>Measured on this MacBook Pro, M4 Pro, 24 GB · Olingo's voice starts 0.9 to 1.6 s after yours ends</span><span>2 / 2</span></div>
 </section>
 
 </div>
@@ -157,7 +136,7 @@
   const slides = [...document.querySelectorAll('.slide')];
   let i = Math.max(0, Math.min(slides.length - 1, (parseInt(location.hash.slice(1)) || 1) - 1));
   function fit() { const k = Math.min(innerWidth / 1600, innerHeight / 900); slides.forEach(s => s.style.transform = `scale(${k})`); }
-  function show(n) { i = Math.max(0, Math.min(slides.length - 1, n)); slides.forEach((s, j) => { s.classList.toggle('on', j === i); s.style.display = j === i ? (s.classList.contains('s1') ? 'grid' : 'block') : 'none'; }); history.replaceState(null, '', '#' + (i + 1)); }
+  function show(n) { i = Math.max(0, Math.min(slides.length - 1, n)); slides.forEach((s, j) => s.classList.toggle('on', j === i)); history.replaceState(null, '', '#' + (i + 1)); }
   addEventListener('keydown', e => {
     if (['ArrowRight', 'ArrowDown', ' ', 'PageDown', 'Enter'].includes(e.key)) { e.preventDefault(); show(i + 1); }
     if (['ArrowLeft', 'ArrowUp', 'PageUp', 'Backspace'].includes(e.key)) { e.preventDefault(); show(i - 1); }

@@ -11,7 +11,7 @@ from contextlib import asynccontextmanager
 from pathlib import Path
 
 import uvicorn
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, Request, WebSocket, WebSocketDisconnect
 from fastapi.responses import FileResponse, Response
 from PIL import Image
 
@@ -429,6 +429,22 @@ def agent_candidates():
 def deck():
     """The saved flashcards: words, readings, example sentences. Nothing else is ever stored."""
     return {"cards": load_deck()}
+
+
+SHOTS = ROOT.parent / "shots_new"                       # outside the repository: looked at before anything is published
+
+
+@app.post("/api/shot")
+async def shot(request: Request, name: str = "shot"):
+    """Photo mode (http://localhost:8765/?shoot): the page sends a picture of itself, taken because the person in
+    front of it asked for one. This is the one place where a picture is written to disk, and only in that mode."""
+    import re
+    data = await request.body()
+    if not re.fullmatch(r"[a-z0-9_]{1,40}", name) or not data.startswith(b"\x89PNG") or len(data) > 40_000_000:
+        return {"ok": False}
+    SHOTS.mkdir(exist_ok=True)
+    (SHOTS / f"{name}.png").write_bytes(data)
+    return {"ok": True, "saved": str(SHOTS / f"{name}.png"), "kb": len(data) // 1024}
 
 
 @app.post("/api/typed")
