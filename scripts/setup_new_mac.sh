@@ -37,4 +37,4 @@ echo "5/5 tests"
 (cd "$H/olingo" && ../.venv/bin/python -m unittest discover -s tests 2>&1 | tail -1)
 echo "Ready. Start with:  cd $H/olingo && scripts/run.sh   then open http://localhost:8765 in Chrome."
 echo "Prove it runs offline:  scripts/offline_check.sh"
-echo "The Raspberry Pi (Luma): pair it in System Settings > Bluetooth, then press Connect on the start screen."
+echo "The Raspberry Pi (Duo): pair it in System Settings > Bluetooth, then press Connect on the start screen."

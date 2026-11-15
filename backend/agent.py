@@ -43,7 +43,9 @@ def ulaw_decode(u8: bytes) -> bytes:
 
 
 BUILT_IN_PORTS = ("Bluetooth-Incoming-Port", "debug-console", "wlan-debug")
-LIKELY = ("olingo", "raspberry", "rasp", "pi", "luma", "wali")
+LIKELY = ("olingo", "raspberry", "rasp", "pi", "luma", "wali", "duo")
+DEVICE_NAME = "Duo"                                 # what the device is called on the page and when it speaks; the
+                                                    # relay program on the Pi, and its Bluetooth name, are still "Luma"
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BT_HELPER = os.path.join(ROOT, "bridge", ".build", "olingo-bt")
 # Luma's message types (luma/protocol.py on the Pi)
@@ -194,7 +196,8 @@ def candidates() -> list:
     out = []
     for name, addr in paired_devices():                    # asked for directly: works after the device restarts
         if any(k in name.lower() for k in LIKELY):
-            out.append({"target": "bt://" + addr.replace(":", "-"), "label": f"{name} (Bluetooth)", "likely": True})
+            shown = DEVICE_NAME if "luma" in name.lower() else name
+            out.append({"target": "bt://" + addr.replace(":", "-"), "label": f"{shown} (Bluetooth)", "likely": True})
     for p in sorted(glob.glob("/dev/cu.*")):
         name = p.split("/dev/cu.", 1)[1]
         if name not in BUILT_IN_PORTS and not any(k in name.lower() for k in LIKELY):
@@ -392,7 +395,7 @@ class AgentLink:
                 h = json.loads(payload or b"{}")
                 c = h.get("config") or {}
                 self.luma = True
-                self.info = {"name": "Luma", "camera": [c.get("photo_width"), c.get("photo_height")],
+                self.info = {"name": DEVICE_NAME, "camera": [c.get("photo_width"), c.get("photo_height")],
                              "protocol": h.get("protocol"), "simulated": False, "codec": "mic_codec" in c}
                 self.hello.set()
             elif t == L_STATUS:

@@ -85,9 +85,9 @@ them by the sketch and then by a yes/no from Bonsai, so nothing is asked twice.
 ## Olingo in your hand: the Raspberry Pi
 
 The same call can run through a small device, so it is not tied to the laptop: a Raspberry Pi 5 with a camera and a
-ReSpeaker microphone and speaker. It runs **Luma**, our Bluetooth relay; the Mac stays the brain. Press
-**Connect Luma** on the start screen: the page shows what the Pi sees, Olingo hears through the Pi and speaks
-through it, and the Pi says "Luma is connected."
+ReSpeaker microphone and speaker. We call it **Duo**. It runs our Bluetooth relay; the Mac stays the brain. Press
+**Connect Duo** on the start screen: the page shows what the Pi sees, Olingo hears through the Pi and speaks
+through it, and the Pi says "Duo is connected."
 
 | Over Bluetooth, measured | |
 |---|---|
