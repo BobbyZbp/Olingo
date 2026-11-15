@@ -49,6 +49,10 @@ BT_HELPER = os.path.join(ROOT, "bridge", ".build", "olingo-bt")
 # Luma's message types (luma/protocol.py on the Pi)
 L_HELLO, L_PHOTO, L_MIC, L_STATUS, L_SPEAKER, L_SPEAKER_STOP, L_CONFIG = 0x01, 0x02, 0x03, 0x04, 0x10, 0x11, 0x12
 L_MIC_ADPCM, L_SPEAKER_ADPCM = 0x06, 0x14          # compressed sound, added to Luma for slow links (same code there)
+# Luma's picture settings. It starts careful; once the microphone is seen to arrive complete, it asks for a sharper
+# picture five times a second. If the microphone then falls behind (a slow link), it goes back.
+LUMA_LOW = {"photo_interval": 1.0, "photo_width": 512, "photo_height": 288, "photo_quality": 60}
+LUMA_HIGH = {"photo_interval": 0.2, "photo_width": 640, "photo_height": 360, "photo_quality": 65}
 
 
 # --- compressed audio: IMA ADPCM, 4 bits a sample (a quarter of 16-bit PCM), for slow Bluetooth links ---
@@ -224,6 +228,7 @@ class AgentLink:
         self.fps = self.fps_goal = 2.0 if self.compact else 4.0
         self.luma = False                                 # the device at the other end is the team's Luma relay
         self.luma_adpcm = False                           # ... and it has agreed to compressed sound
+        self.profile = ""                                 # Luma's picture settings in force: "careful" or "sharp"
         self.spk_state = (0, 0)
         self.down = Down16()
         self.proc = None
@@ -297,17 +302,36 @@ class AgentLink:
                                + ": is it switched on and close by?")
         if self.luma:                                      # Luma: its own settings message, no mu-law, no ping
             self.compact = False
-            want = {"photo_interval": 1.0, "photo_width": 512, "photo_height": 288, "photo_quality": 60}
-            if self.info.get("codec"):                     # this Luma knows compressed sound: a quarter of the bytes
-                want["mic_codec"] = "adpcm"
-            self.ctl.append((L_CONFIG, json.dumps(want).encode()))
-            self.wake.set()
+            self._luma_config(LUMA_LOW)
+            threading.Thread(target=self._luma_tune, daemon=True).start()
             return self.info
         if self.compact:
             self.control(cmd="codec", sound="ulaw")
         self.control(cmd="camera", fps=self.fps, quality=45 if self.compact else 60)
         threading.Thread(target=self._pinger, daemon=True).start()
         return self.info
+
+    def _luma_config(self, photo: dict):
+        want = dict(photo)
+        if self.info.get("codec"):                         # this Luma knows compressed sound: a quarter of the bytes
+            want["mic_codec"] = "adpcm"
+        self.profile = "sharp" if photo is LUMA_HIGH else "careful"
+        self.ctl.append((L_CONFIG, json.dumps(want).encode()))
+        self.wake.set()
+
+    def _luma_tune(self):
+        """Sound first: the sharper, faster picture is kept only while the microphone arrives complete."""
+        time.sleep(5.0)                                    # the first seconds are left alone (the caller measures them)
+        back_off = 0.0
+        while self.alive:
+            a, t = self.stats["mic_s"], time.time()
+            time.sleep(3.0)
+            rate = (self.stats["mic_s"] - a) / max(time.time() - t, 0.1)
+            if rate < 0.85 and self.profile == "sharp":
+                back_off = time.time() + 60
+                self._luma_config(LUMA_LOW)
+            elif rate >= 0.95 and self.profile == "careful" and time.time() > back_off:
+                self._luma_config(LUMA_HIGH)
 
     # ----- the link is measured all the time: sound must stay current, so pictures give way on a slow link -----
     def _pinger(self):
@@ -493,7 +517,8 @@ class AgentLink:
                 "kb_in": round(s["bytes_in"] / 1024), "kb_out": round(s["bytes_out"] / 1024),
                 "kbps_in": round(s["bytes_in"] * 8 / 1000 / max(time.time() - s["since"], 1)),
                 "delay_ms": s["delay_ms"], "fps": round(self.fps, 1),
-                "sound": "compressed" if (self.luma_adpcm or (self.compact and not self.luma)) else "uncompressed"}
+                "sound": "compressed" if (self.luma_adpcm or (self.compact and not self.luma)) else "uncompressed",
+                "picture": self.info.get("camera"), "profile": self.profile}
 
     def close(self):
         self.alive = False
