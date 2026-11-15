@@ -8,9 +8,7 @@ Duolingo's Video Call with Lily, recreated on-device with PrismML Bonsai-2 and A
 
 <p align="center"><i>Lily can't see you. Olingo can, and no one else ever will. It remembers your words, not your face.</i></p>
 
-<p align="center"><b>The same idea, on one Mac, with WiFi off, and it can see what you hold up:</b></p>
-
-<p align="center"><img src="docs/img/hero.jpg" width="900" alt="Olingo Live: it has looked at the room and offers to teach the word for something it sees"></p>
+<p align="center"><b>The same idea, on one Mac, with WiFi off, and it can see what you hold up.</b></p>
 
 <p align="center">Cornell Local AI Hackathon · theme: <b>Recreate</b> · built by <b>Bobby</b> and <b>Lixing</b></p>
 
@@ -34,18 +32,21 @@ Duolingo's Video Call with Lily, recreated on-device with PrismML Bonsai-2 and A
 
 <table>
 <tr>
-<td width="33%"><img src="docs/img/2_offer.jpg" alt="It opens with something it sees"><br><sub><b>1.</b> It asks your name, then offers something it already saw while the call was ringing.</sub></td>
-<td width="33%"><img src="docs/img/3_drill.jpg" alt="Repeating a word"><br><sub><b>2.</b> You repeat the word. Each character is coloured by how clearly it was heard. Miss it, and the tutor says it again, slowly.</sub></td>
-<td width="33%"><img src="docs/img/4_phrase.jpg" alt="A phrase"><br><sub><b>3.</b> Then two phrases with the word: explained first, then you say them, then they are checked.</sub></td>
-</tr>
-<tr>
-<td><img src="docs/img/5_conversation.jpg" alt="Conversation"><br><sub><b>4.</b> You just talk. It follows what you say, remembers it, and never asks the same thing twice.</sub></td>
-<td><img src="docs/img/6_look.jpg" alt="It looks when asked"><br><sub><b>5.</b> "What is this?" Only now does Bonsai get a frame. The first sentence is spoken while the rest is still being written.</sub></td>
-<td><img src="docs/img/7_receipt.jpg" alt="The receipt"><br><sub><b>6.</b> Hang up: flashcards of your words, and a receipt of what was seen, heard, kept (words) and sent (nothing).</sub></td>
+<td width="50%"><img src="docs/img/call_offer.jpg" alt="Olingo has looked at the room and offers to teach the word for the poster it saw"><br><sub><b>It opens with something it sees.</b> While the call rang, Bonsai-2 9B took one look at the room (poster, blazer, t-shirt, desk, lamp). After asking your name it offers one of them: "I can see your poster. Want to learn that word, or show me something else?"</sub></td>
+<td width="50%"><img src="docs/img/call_receipt.jpg" alt="The receipt after the call: frames seen and kept, seconds heard and kept, bytes sent"><br><sub><b>It ends with a receipt.</b> Your words as flashcards, and what happened to everything else: 232 frames of you seen, 0 kept; 14.2 s of your voice heard, 0 kept; 0 bytes sent, 0 external connections.</sub></td>
 </tr>
 </table>
 
-Every number on the page is measured during the call. These screenshots are from one real call on this Mac.
+In between:
+
+1. **You repeat the word.** Each character is coloured by how clearly it was heard. Miss it, and the tutor says it
+   again, slowly, and lets you try again.
+2. **Then two phrases with the word**: explained first, then you say them, then they are checked.
+3. **You just talk.** It follows what you say, remembers it, and never asks the same thing twice.
+4. **"What is this?"** Only now does Bonsai get a frame. The first sentence is spoken while the rest is still
+   being written.
+
+Every number on the page is measured during the call. Both pictures are from a real call on this Mac.
 
 You speak English, Chinese, French or Japanese; you learn Chinese (with pinyin), English, Spanish, French, Japanese,
 Korean, German, Italian or Portuguese. One voice speaks for the whole call, native in the language you are learning.
@@ -66,9 +67,9 @@ Korean, German, Italian or Portuguese. One voice speaks for the whole call, nati
 | All at once | GPU + Neural Engine | Bonsai generating while speech is synthesised and transcribed. | Bonsai -4% · TTSKit -7% · WhisperKit +4% time |
 
 **Code decides which model answers, never a model.** Tier 0 is no model at all (commands, yes and no, scoring a
-repeated word, swapping learned words into sentences): 6 of the 12 responses in the call above. Tier 1 is Bonsai on text.
+repeated word, swapping learned words into sentences): 6 of the 12 responses in a two-minute test call. Tier 1 is Bonsai on text.
 Tier 2 is Bonsai with one frame, and only when your words point at the picture or the conversation has run dry.
-In the call in the screenshots Bonsai looked at 1 of 560 frames, and 24 of 36 spoken lines came from the cache.
+In that test call Bonsai looked at 1 of 560 frames, and 24 of 36 spoken lines came from the cache.
 
 **Memory without a bigger context.** The last 30 seconds are kept word for word. Older turns are compressed to a
 256-number sketch and a few words. Every question it asked stays for the whole call; a new one is compared with
